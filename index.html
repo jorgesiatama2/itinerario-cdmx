@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CDMX 2026 - Itinerario Jorge & Erika (v21)</title>
+    <title>CDMX 2026 - Itinerario Jorge & Erika (v22)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -82,7 +82,7 @@
                     <i class="fa-solid fa-plane-departure text-lg"></i>
                 </div>
                 <div>
-                    <h1 class="font-bold text-sm text-white">CDMX 2026 • v21</h1>
+                    <h1 class="font-bold text-sm text-white">CDMX 2026 • v22</h1>
                     <p class="text-xs text-slate-400">Jorge Siatama & Erika Ruda</p>
                 </div>
             </div>
@@ -1331,7 +1331,51 @@
             </div>
         </div>
 
-        <!-- PESTAÑA 4: PRESUPUESTO Y SOUVENIRS -->
+        <!-- PESTAÑA 4: TASA DE CAMBIO Y CONVERSOR -->
+        <div id="tab-tasa" class="tab-content space-y-4">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-4 shadow-lg">
+                <div class="border-b border-slate-800 pb-2 flex justify-between items-center">
+                    <div>
+                        <h3 class="font-bold text-amber-400 text-sm"><i class="fa-solid fa-right-left"></i> Tasa de Cambio & Conversor</h3>
+                        <p class="text-[10px] text-slate-400">Pesos Mexicanos (MXN) a Pesos Colombianos (COP)</p>
+                    </div>
+                    <div class="flex items-center space-x-1 bg-slate-950 px-2 py-1 rounded-xl border border-slate-800">
+                        <span class="text-[10px] text-slate-400">Tasa:</span>
+                        <input type="number" id="exchange-rate-input" value="230" oninput="updateCurrencyConverter()" class="w-14 bg-transparent text-amber-400 font-bold text-xs text-right focus:outline-none">
+                        <span class="text-[10px] text-slate-400">COP</span>
+                    </div>
+                </div>
+
+                <!-- Calculadora Interactiva -->
+                <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800 space-y-2">
+                    <label class="text-xs font-semibold text-slate-300 block">Calculadora en Vivo (Ingresa MXN):</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-2.5 text-amber-400 font-bold text-xs">$</span>
+                        <input type="number" id="calc-input-mxn" placeholder="Ej. 100" oninput="calculateCustomAmount()" class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-7 pr-3 py-2 text-white font-bold text-sm focus:outline-none focus:border-amber-500">
+                    </div>
+                    <div class="text-right pt-1">
+                        <span class="text-[10px] text-slate-400">Equivalente aproximado:</span>
+                        <p class="text-base font-extrabold text-emerald-400" id="calc-result-cop">$0 COP</p>
+                    </div>
+                </div>
+
+                <!-- Tabla de Referencia de Billetes y Monedas Más Usadas -->
+                <div class="space-y-2">
+                    <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider"><i class="fa-solid fa-money-bill-wave"></i> Billetes y Monedas Referencia</h4>
+                    <div class="bg-slate-950/60 rounded-xl border border-slate-800 overflow-hidden text-xs">
+                        <div class="grid grid-cols-2 p-2.5 bg-slate-900 border-b border-slate-800 font-bold text-slate-300">
+                            <span>Pesos Mexicanos (MXN)</span>
+                            <span class="text-right">Pesos Colombianos (COP)</span>
+                        </div>
+                        <div class="divide-y divide-slate-800/60" id="denom-table-body">
+                            <!-- Se llena dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PESTAÑA 5: PRESUPUESTO Y SOUVENIRS -->
         <div id="tab-presupuesto" class="tab-content space-y-4">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
                 <div class="flex justify-between items-center border-b border-slate-800 pb-2">
@@ -1347,7 +1391,7 @@
                 <!-- Lista de Gastos con Botones de Pagador y Edición de Precio -->
                 <div class="text-xs space-y-3 text-slate-300 divide-y divide-slate-800" id="budget-items-container">
                     <!-- Item 1 -->
-                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="250" data-default-cop="57500" data-id="b1">
+                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="250" data-id="b1">
                         <div class="flex justify-between items-start">
                             <span>Caminata Ángel & Aperitivo (Día 1):</span>
                             <div class="flex items-center space-x-1">
@@ -1363,7 +1407,7 @@
                     </div>
 
                     <!-- Item 2 -->
-                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="500" data-default-cop="115000" data-id="b2">
+                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="500" data-id="b2">
                         <div class="flex justify-between items-start">
                             <span>Turibus Nocturno CDMX (Día 1):</span>
                             <div class="flex items-center space-x-1">
@@ -1379,7 +1423,7 @@
                     </div>
 
                     <!-- Item 3 -->
-                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="550" data-default-cop="126500" data-id="b3">
+                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="550" data-id="b3">
                         <div class="flex justify-between items-start">
                             <span>Fiebre de Malta / Comida (Día 1):</span>
                             <div class="flex items-center space-x-1">
@@ -1395,7 +1439,7 @@
                     </div>
 
                     <!-- Item 4 -->
-                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="250" data-default-cop="57500" data-id="b4">
+                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="250" data-id="b4">
                         <div class="flex justify-between items-start">
                             <span>Comida / Antojos Coyoacán (Día 2):</span>
                             <div class="flex items-center space-x-1">
@@ -1411,7 +1455,7 @@
                     </div>
 
                     <!-- Item 5 -->
-                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="200" data-default-cop="46000" data-id="b5">
+                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="200" data-id="b5">
                         <div class="flex justify-between items-start">
                             <span>Uber Arena México i/v (Día 2):</span>
                             <div class="flex items-center space-x-1">
@@ -1427,7 +1471,7 @@
                     </div>
 
                     <!-- Item 6 -->
-                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="800" data-default-cop="184000" data-id="b6">
+                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="800" data-id="b6">
                         <div class="flex justify-between items-start">
                             <span>Entradas Lucha Libre CMLL (Día 2):</span>
                             <div class="flex items-center space-x-1">
@@ -1443,7 +1487,7 @@
                     </div>
 
                     <!-- Item 7 -->
-                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="300" data-default-cop="69000" data-id="b7">
+                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="300" data-id="b7">
                         <div class="flex justify-between items-start">
                             <span>Souvenirs y Máscaras Arena (Día 2):</span>
                             <div class="flex items-center space-x-1">
@@ -1459,7 +1503,7 @@
                     </div>
 
                     <!-- Item 8 -->
-                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="180" data-default-cop="41400" data-id="b8">
+                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="180" data-id="b8">
                         <div class="flex justify-between items-start">
                             <span>Uber Plaza Garibaldi i/v (Día 3):</span>
                             <div class="flex items-center space-x-1">
@@ -1475,7 +1519,7 @@
                     </div>
 
                     <!-- Item 9 -->
-                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="180" data-default-cop="41400" data-id="b9">
+                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="180" data-id="b9">
                         <div class="flex justify-between items-start">
                             <span>Museo Tequila y Mezcal MUTEM (Día 3):</span>
                             <div class="flex items-center space-x-1">
@@ -1491,7 +1535,7 @@
                     </div>
 
                     <!-- Item 10 -->
-                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="500" data-default-cop="115000" data-id="b10">
+                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="500" data-id="b10">
                         <div class="flex justify-between items-start">
                             <span>Mariachis y Tenampa (Día 3):</span>
                             <div class="flex items-center space-x-1">
@@ -1507,7 +1551,7 @@
                     </div>
 
                     <!-- Item 11 -->
-                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="80" data-default-cop="18400" data-id="b11">
+                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="80" data-id="b11">
                         <div class="flex justify-between items-start">
                             <span>Uber Retorno Tolantongo (Día 4):</span>
                             <div class="flex items-center space-x-1">
@@ -1523,7 +1567,7 @@
                     </div>
 
                     <!-- Item 12 -->
-                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="350" data-default-cop="77000" data-id="b12">
+                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="350" data-id="b12">
                         <div class="flex justify-between items-start">
                             <span>Noche Domingo - Opción 1 o 2 (Día 4):</span>
                             <div class="flex items-center space-x-1">
@@ -1539,7 +1583,7 @@
                     </div>
 
                     <!-- Item 13 -->
-                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="795" data-default-cop="182850" data-id="b13">
+                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="795" data-id="b13">
                         <div class="flex justify-between items-start">
                             <span>Zócalo, Templo Mayor, Barrio Chino y Chapultepec (Día 5):</span>
                             <div class="flex items-center space-x-1">
@@ -1555,7 +1599,7 @@
                     </div>
 
                     <!-- Item 14 -->
-                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="1525" data-default-cop="350750" data-id="b14">
+                    <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-default-mxn="1525" data-id="b14">
                         <div class="flex justify-between items-start">
                             <span>Guía de Souvenirs y Compras (Obsidiana, Tequila, Artesanías):</span>
                             <div class="flex items-center space-x-1">
@@ -1603,7 +1647,7 @@
             </div>
         </div>
 
-        <!-- PESTAÑA 5: ANTES / DESPUÉS Y CRONOGRAMA -->
+        <!-- PESTAÑA 6: ANTES / DESPUÉS Y CRONOGRAMA -->
         <div id="tab-antes" class="tab-content space-y-4">
             <!-- Bloque interactivo Miércoles 11 Nov (Noche Antes) -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
@@ -1698,6 +1742,10 @@
                 <i class="fa-solid fa-address-book text-base"></i>
                 <span class="text-[10px] mt-1">Contactos</span>
             </button>
+            <button onclick="switchTab('tasa')" id="nav-tasa" class="nav-btn flex flex-col items-center text-slate-400">
+                <i class="fa-solid fa-right-left text-base"></i>
+                <span class="text-[10px] mt-1">Moneda</span>
+            </button>
             <button onclick="switchTab('presupuesto')" id="nav-presupuesto" class="nav-btn flex flex-col items-center text-slate-400">
                 <i class="fa-solid fa-wallet text-base"></i>
                 <span class="text-[10px] mt-1">Presupuesto</span>
@@ -1763,6 +1811,8 @@
 
         const budgetIds = ['b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'b9', 'b10', 'b11', 'b12', 'b13', 'b14'];
 
+        const denominations = [20, 50, 100, 200, 500, 1000, 2000, 5000];
+
         function setActivityState(id, targetState) {
             const currentState = window.serverActivities && window.serverActivities[id] ? window.serverActivities[id] : null;
             if (currentState === targetState) {
@@ -1786,7 +1836,7 @@
             const currentMxn = currentCustomPrices[id] !== undefined ? currentCustomPrices[id] : defaultMxn;
             
             const newMxnStr = prompt(`Ingrese el nuevo precio en MXN para este ítem:`, currentMxn);
-            if (newMxnStr === null) return; // Cancelado
+            if (newMxnStr === null) return;
 
             const newMxn = parseFloat(newMxnStr);
             if (isNaN(newMxn) || newMxn < 0) {
@@ -1815,11 +1865,13 @@
                 return;
             }
 
+            const rate = parseFloat(document.getElementById('exchange-rate-input').value) || 230;
+
             const newExpenseRef = db.ref('gastos_adicionales').push();
             newExpenseRef.set({
                 name: name,
                 mxn: mxn,
-                cop: Math.round(mxn * 230), // Tasa estimada de referencia
+                cop: Math.round(mxn * rate),
                 payer: payer
             });
 
@@ -1837,6 +1889,48 @@
             db.ref('precios_personalizados/').remove();
         }
 
+        function updateCurrencyConverter() {
+            const rateInput = document.getElementById('exchange-rate-input');
+            const rate = parseFloat(rateInput.value) || 230;
+
+            // Actualizar Calculadora en Vivo
+            calculateCustomAmount();
+
+            // Actualizar Tabla de Denominaciones
+            const tbody = document.getElementById('denom-table-body');
+            if (tbody) {
+                tbody.innerHTML = '';
+                denominations.forEach(mxn => {
+                    const cop = Math.round(mxn * rate);
+                    const row = document.createElement('div');
+                    row.className = "grid grid-cols-2 p-2.5 items-center";
+                    row.innerHTML = `
+                        <span class="font-bold text-white">$${mxn.toLocaleString()} MXN</span>
+                        <span class="text-right text-emerald-400 font-bold">~$${cop.toLocaleString()} COP</span>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+
+            updateBudgetUI();
+        }
+
+        function calculateCustomAmount() {
+            const input = document.getElementById('calc-input-mxn');
+            const result = document.getElementById('calc-result-cop');
+            const rate = parseFloat(document.getElementById('exchange-rate-input').value) || 230;
+
+            if (input && result) {
+                const val = parseFloat(input.value);
+                if (isNaN(val) || val <= 0) {
+                    result.innerText = "$0 COP";
+                } else {
+                    const converted = Math.round(val * rate);
+                    result.innerText = `$${converted.toLocaleString()} COP`;
+                }
+            }
+        }
+
         function updateBudgetUI() {
             let totalMxn = 0;
             let totalCop = 0;
@@ -1845,6 +1939,7 @@
             let erikaMxn = 0;
             let erikaCop = 0;
 
+            const rate = parseFloat(document.getElementById('exchange-rate-input').value) || 230;
             const rows = document.querySelectorAll('.budget-row');
 
             rows.forEach((row, index) => {
@@ -1852,15 +1947,11 @@
                 const state = window.serverBudget && window.serverBudget[id] ? window.serverBudget[id] : null;
                 
                 const defMxn = parseInt(row.getAttribute('data-default-mxn')) || 0;
-                const defCop = parseInt(row.getAttribute('data-default-cop')) || 0;
                 
-                // Verificar si hay precio personalizado en Firebase
                 const customPrices = window.serverCustomPrices || {};
                 const mxn = customPrices[id] !== undefined ? parseFloat(customPrices[id]) : defMxn;
-                // Mantener proporción estimada de COP si se edita el MXN (aprox 230 COP por MXN)
-                const cop = customPrices[id] !== undefined ? Math.round(mxn * 230) : defCop;
+                const cop = Math.round(mxn * rate);
 
-                // Actualizar etiqueta visual del precio en el HTML
                 const labelMxn = document.getElementById('label-mxn-' + id);
                 if (labelMxn) {
                     labelMxn.innerText = `$${mxn.toLocaleString()} MXN (~$${cop.toLocaleString()} COP)`;
@@ -1893,7 +1984,6 @@
                 }
             });
 
-            // Procesar Gastos Adicionales
             const customListContainer = document.getElementById('custom-expenses-list');
             if (customListContainer) {
                 customListContainer.innerHTML = '';
@@ -1901,17 +1991,18 @@
                 
                 Object.keys(customExpenses).forEach(key => {
                     const exp = customExpenses[key];
+                    const currentCop = Math.round(exp.mxn * rate);
                     const badgeColor = exp.payer === 'jorge' ? 'bg-amber-500 text-slate-950' : 'bg-purple-600 text-white';
                     const payerLabel = exp.payer === 'jorge' ? 'Jorge' : 'Erika';
 
                     totalMxn += exp.mxn;
-                    totalCop += exp.cop;
+                    totalCop += currentCop;
                     if (exp.payer === 'jorge') {
                         jorgeMxn += exp.mxn;
-                        jorgeCop += exp.cop;
+                        jorgeCop += currentCop;
                     } else {
                         erikaMxn += exp.mxn;
-                        erikaCop += exp.cop;
+                        erikaCop += currentCop;
                     }
 
                     const itemDiv = document.createElement('div');
@@ -1922,7 +2013,7 @@
                             <span class="text-white">${exp.name}</span>
                         </div>
                         <div class="flex items-center space-x-2">
-                            <span class="text-amber-400 font-bold">$${exp.mxn.toLocaleString()} MXN (~$${exp.cop.toLocaleString()} COP)</span>
+                            <span class="text-amber-400 font-bold">$${exp.mxn.toLocaleString()} MXN (~$${currentCop.toLocaleString()} COP)</span>
                             <button onclick="removeCustomExpense('${key}')" class="text-rose-400 hover:text-rose-300 px-1"><i class="fa-solid fa-xmark"></i></button>
                         </div>
                     `;
@@ -2059,6 +2150,7 @@
 
         window.onload = function() {
             escucharCambiosEnNube();
+            updateCurrencyConverter();
         };
     </script>
 </body>
