@@ -69,6 +69,11 @@
             border-color: #e2e8f0 !important;
         }
     </style>
+
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen pb-24">
 
@@ -1644,8 +1649,25 @@
         </div>
     </div>
 
-    <!-- Script de Interactividad -->
+
+   <!-- Script de Interactividad -->
+<!-- Script de Interactividad -->
     <script>
+        // Configuración de Firebase con tus credenciales
+        const firebaseConfig = {
+            apiKey: "AIzaSyDsmt2yYqYgqoLmzHTLkrd6psdP-5vkS-0",
+            authDomain: "cdmx-2026-itinerario.firebaseapp.com",
+            databaseURL: "https://cdmx-2026-itinerario-default-rtdb.firebaseio.com",
+            projectId: "cdmx-2026-itinerario",
+            storageBucket: "cdmx-2026-itinerario.firebasestorage.app",
+            messagingSenderId: "397381459645",
+            appId: "1:397381459645:web:9472a64399a311237121d4"
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
         const activityIds = [
             'd1-1', 'd1-2', 'd1-3', 'd1-4', 'd1-5', 'd1-6', 'd1-7', 'd1-8', 'd1-9', 'd1-10', 'd1-11', 'd1-12', 
             'd2-1', 'd2-2', 'd2-3', 'd2-4', 'd2-5', 'd2-6', 'd2-7', 'd2-8', 'd2-9', 'd2-10', 'd2-11', 'd2-12', 'd2-13', 
@@ -1655,52 +1677,54 @@
             'before-1', 'before-2', 'before-3', 'before-4'
         ];
 
+        const budgetIds = ['b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'b9', 'b10', 'b11', 'b12', 'b13', 'b14'];
 
-            // ⬇️ PEGA AQUÍ EL CÓDIGO DE PRESUPUESTO ⬇️
-            const budgetIds = ['b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'b9', 'b10', 'b11', 'b12', 'b13', 'b14'];
+        // Funciones para guardar en Firebase en tiempo real
+        function setActivityState(id, state) {
+            db.ref('actividades/' + id).set(state);
+        }
 
-            function setBudgetState(id, state) {
-                localStorage.setItem('budget_' + id, state);
+        function setBudgetState(id, state) {
+            db.ref('presupuesto/' + id).set(state);
+        }
+
+        function resetBudget() {
+            db.ref('presupuesto/').remove().then(() => {
                 updateBudgetUI();
-            }
+            });
+        }
 
-            function resetBudget() {
-                budgetIds.forEach(id => {
-                    localStorage.removeItem('budget_' + id);
-                });
-                updateBudgetUI();
-            }
+        // Actualizar UI del Presupuesto leyendo desde la nube (window.serverBudget)
+        function updateBudgetUI() {
+            let totalMxn = 0;
+            let totalCop = 0;
+            const rows = document.querySelectorAll('.budget-row');
 
-            function updateBudgetUI() {
-                let totalMxn = 0;
-                let totalCop = 0;
-                const rows = document.querySelectorAll('.budget-row');
+            rows.forEach((row, index) => {
+                const id = budgetIds[index];
+                const state = window.serverBudget && window.serverBudget[id] ? window.serverBudget[id] : null;
+                const btnDone = document.getElementById('btn-' + id + '-done');
+                const btnNone = document.getElementById('btn-' + id + '-none');
+                
+                if (btnDone && btnNone) {
+                    btnDone.className = "px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition";
+                    btnNone.className = "px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition";
 
-                rows.forEach((row, index) => {
-                    const id = budgetIds[index];
-                    const state = localStorage.getItem('budget_' + id);
-                    const btnDone = document.getElementById('btn-' + id + '-done');
-                    const btnNone = document.getElementById('btn-' + id + '-none');
-                    
-                    if (btnDone && btnNone) {
-                        btnDone.className = "px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition";
-                        btnNone.className = "px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition";
-
-                        if (state === 'done' || state === null) {
-                            if(state === 'done') btnDone.className = "px-2 py-0.5 text-[10px] font-semibold rounded bg-emerald-600 text-white shadow";
-                            totalMxn += parseInt(row.getAttribute('data-mxn'));
-                            totalCop += parseInt(row.getAttribute('data-cop'));
-                        } else if (state === 'none') {
-                            btnNone.className = "px-2 py-0.5 text-[10px] font-semibold rounded bg-rose-600 text-white shadow";
-                        }
+                    if (state === 'done' || state === null) {
+                        if(state === 'done') btnDone.className = "px-2 py-0.5 text-[10px] font-semibold rounded bg-emerald-600 text-white shadow";
+                        totalMxn += parseInt(row.getAttribute('data-mxn'));
+                        totalCop += parseInt(row.getAttribute('data-cop'));
+                    } else if (state === 'none') {
+                        btnNone.className = "px-2 py-0.5 text-[10px] font-semibold rounded bg-rose-600 text-white shadow";
                     }
-                });
-
-                const totalText = document.getElementById('budget-total-text');
-                if (totalText) {
-                    totalText.innerText = `$${totalMxn.toLocaleString()} MXN (~ $${totalCop.toLocaleString()} COP)`;
                 }
+            });
+
+            const totalText = document.getElementById('budget-total-text');
+            if (totalText) {
+                totalText.innerText = `$${totalMxn.toLocaleString()} MXN (~ $${totalCop.toLocaleString()} COP)`;
             }
+        }
 
         /* Funciones del Modal de Emergencia */
         function openEmergencyModal() {
@@ -1745,20 +1769,16 @@
             }
         }
 
-        function setActivityState(id, state) {
-            localStorage.setItem('act_' + id, state);
-            updateUI();
-        }
-
+        // Actualizar UI de Actividades leyendo desde la nube (window.serverActivities)
         function updateUI() {
             let doneCount = 0;
             let noneCount = 0;
-            
+
             activityIds.forEach(id => {
-                const state = localStorage.getItem('act_' + id);
+                const state = window.serverActivities && window.serverActivities[id] ? window.serverActivities[id] : null;
                 const btnDone = document.getElementById('btn-' + id + '-done');
                 const btnNone = document.getElementById('btn-' + id + '-none');
-                
+
                 if (btnDone && btnNone) {
                     btnDone.className = "px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition";
                     btnNone.className = "px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition";
@@ -1773,24 +1793,31 @@
                 }
             });
 
-            const percent = Math.round((doneCount / activityIds.length) * 100);
-            
-            if(document.getElementById('progress-text')) {
-                document.getElementById('progress-text').innerText = percent + '% Progreso';
-                document.getElementById('progress-bar').style.width = percent + '%';
-            }
-
-            if(document.getElementById('inicio-done-count')) {
-                document.getElementById('inicio-done-count').innerText = doneCount;
-                document.getElementById('inicio-none-count').innerText = noneCount;
-                document.getElementById('inicio-total-count').innerText = activityIds.length;
+            const progressText = document.getElementById('progress-text');
+            if (progressText) {
+                progressText.innerText = `${doneCount} realizadas`;
             }
         }
 
+        // Escuchar cambios en tiempo real desde la nube para ambos celulares
+        function escucharCambiosEnNube() {
+            db.ref('actividades').on('value', (snapshot) => {
+                window.serverActivities = snapshot.val() || {};
+                updateUI();
+            });
+
+            db.ref('presupuesto').on('value', (snapshot) => {
+                window.serverBudget = snapshot.val() || {};
+                updateBudgetUI();
+            });
+        }
+
         window.onload = function() {
-            updateUI();
-            updateBudgetUI(); 
+            escucharCambiosEnNube();
         };
     </script>
+       
+
+
 </body>
 </html>
