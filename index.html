@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CDMX 2026 - Itinerario Jorge & Erika (v24)</title>
+    <title>CDMX 2026 - Itinerario Jorge & Erika (v25)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -50,7 +50,7 @@
                     <i class="fa-solid fa-plane-departure text-lg"></i>
                 </div>
                 <div>
-                    <h1 class="font-bold text-sm text-white">CDMX 2026 • v24</h1>
+                    <h1 class="font-bold text-sm text-white">CDMX 2026 • v25</h1>
                     <p class="text-xs text-slate-400">Jorge Siatama & Erika Ruda</p>
                 </div>
             </div>
@@ -156,7 +156,7 @@
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3 shadow-lg">
                 <div class="flex justify-between items-center border-b border-slate-800 pb-2">
                     <span class="text-xs font-bold uppercase tracking-wider text-amber-500"><i class="fa-solid fa-hotel"></i> Alojamiento Base</span>
-                    <a href="tel:+525555667766" class="bg-slate-800 hover:bg-slate-700 text-slate-200 p-2 rounded-xl text-xs transition" title="Llamar al Hotel">
+                    <a href="tel:+525555667766" class="bg-slate-800 hover:bg-slate-700 text-slate-200 p-2 rounded-xl text-xs transition">
                         <i class="fa-solid fa-phone"></i>
                     </a>
                 </div>
@@ -179,9 +179,7 @@
             <div class="bg-amber-600 rounded-2xl p-4 text-slate-950 space-y-2 shadow-xl">
                 <div class="flex justify-between items-center">
                     <span class="text-[11px] font-bold uppercase tracking-wider text-amber-950">Presupuesto Sugerido (2 Pax)</span>
-                    <button onclick="switchTab('presupuesto')" class="text-xs bg-slate-950 text-amber-400 hover:bg-slate-900 font-bold px-3 py-1 rounded-xl transition shadow">
-                        Ver Desglose
-                    </button>
+                    <button onclick="switchTab('presupuesto')" class="text-xs bg-slate-950 text-amber-400 hover:bg-slate-900 font-bold px-3 py-1 rounded-xl transition shadow">Ver Desglose</button>
                 </div>
                 <div>
                     <p class="text-xl font-extrabold text-slate-950">$8.050 - $9.380 MXN</p>
@@ -191,12 +189,8 @@
 
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2 shadow-lg">
                 <div class="flex justify-between items-center">
-                    <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-400">
-                        <i class="fa-solid fa-coins"></i> Gasto Real Acumulado
-                    </span>
-                    <button onclick="switchTab('presupuesto')" class="text-xs bg-slate-800 text-slate-200 hover:bg-slate-700 font-bold px-3 py-1 rounded-xl transition">
-                        Ver Detalles
-                    </button>
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-400"><i class="fa-solid fa-coins"></i> Gasto Real Acumulado</span>
+                    <button onclick="switchTab('presupuesto')" class="text-xs bg-slate-800 text-slate-200 hover:bg-slate-700 font-bold px-3 py-1 rounded-xl transition">Ver Detalles</button>
                 </div>
                 <div class="space-y-1">
                     <p class="text-xl font-extrabold text-white" id="inicio-gasto-real-text">$0 MXN</p>
@@ -222,55 +216,79 @@
             <div id="day-content-1" class="day-pane active space-y-3">
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
                     <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-xs font-bold text-amber-500">03:00 AM</span>
-                            <h3 class="font-bold text-white text-sm mt-0.5">🟡 [SALIDA DESDE CASA] Alistarse para Salir</h3>
-                        </div>
+                        <div><span class="text-xs font-bold text-amber-500">03:00 AM</span><h3 class="font-bold text-white text-sm mt-0.5">🟡 [SALIDA DESDE CASA] Alistarse para Salir</h3></div>
                         <div class="flex space-x-1">
                             <button onclick="setActivityState('d1-1', 'done')" id="btn-d1-1-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
                             <button onclick="setActivityState('d1-1', 'none')" id="btn-d1-1-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
                         </div>
                     </div>
-                    <p class="text-xs text-slate-300">Despertar, verificar maletas de mano, documentos (pasaportes) y preparativos finales en casa antes de tomar el transporte al aeropuerto.</p>
+                    <p class="text-xs text-slate-300">Despertar, verificar maletas de mano, documentos (pasaportes) y preparativos finales.</p>
                 </div>
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
                     <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-xs font-bold text-amber-500">04:00 AM</span>
-                            <h3 class="font-bold text-white text-sm mt-0.5">🟡 [AUTODESPLAZAMIENTO] Tomar Uber al Aeropuerto</h3>
-                        </div>
+                        <div><span class="text-xs font-bold text-amber-500">04:00 AM</span><h3 class="font-bold text-white text-sm mt-0.5">🟡 [AUTODESPLAZAMIENTO] Tomar Uber al Aeropuerto</h3></div>
                         <div class="flex space-x-1">
                             <button onclick="setActivityState('d1-2', 'done')" id="btn-d1-2-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
                             <button onclick="setActivityState('d1-2', 'none')" id="btn-d1-2-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
                         </div>
                     </div>
-                    <p class="text-xs text-slate-300">Solicitar Uber desde casa hacia la Terminal 1 del Aeropuerto El Dorado (BOG).</p>
+                    <p class="text-xs text-slate-300">Solicitar Uber hacia la Terminal 1 de El Dorado (BOG).</p>
                 </div>
             </div>
 
-            <!-- DÍAS 2 al 5 (Simplificados para evitar cortes de texto) -->
+            <!-- DÍA 2 -->
             <div id="day-content-2" class="day-pane space-y-3">
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
-                    <h3 class="font-bold text-amber-400 text-sm">Día 2: Xochimilco, Coyoacán y Lucha Libre</h3>
-                    <p class="text-xs text-slate-300">Actividades programadas con Amigo Tours y Arena México.</p>
+                    <div class="flex justify-between items-start">
+                        <div><span class="text-xs font-bold text-amber-500">08:00 AM</span><h3 class="font-bold text-white text-sm mt-0.5">Xochimilco & Trajinera</h3></div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d2-1', 'done')" id="btn-d2-1-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d2-1', 'none')" id="btn-d2-1-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Tour por canales y Coyoacán con Amigo Tours.</p>
                 </div>
             </div>
+
+            <!-- DÍA 3 -->
             <div id="day-content-3" class="day-pane space-y-3">
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
-                    <h3 class="font-bold text-amber-400 text-sm">Día 3: Teotihuacán y Plaza Garibaldi</h3>
-                    <p class="text-xs text-slate-300">Vuelo en globo, pirámides y mariachis.</p>
+                    <div class="flex justify-between items-start">
+                        <div><span class="text-xs font-bold text-amber-500">06:00 AM</span><h3 class="font-bold text-white text-sm mt-0.5">Vuelo en Globo & Teotihuacán</h3></div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d3-1', 'done')" id="btn-d3-1-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d3-1', 'none')" id="btn-d3-1-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Excursión a pirámides y Basílica de Guadalupe.</p>
                 </div>
             </div>
+
+            <!-- DÍA 4 -->
             <div id="day-content-4" class="day-pane space-y-3">
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
-                    <h3 class="font-bold text-amber-400 text-sm">Día 4: Grutas de Tolantongo</h3>
-                    <p class="text-xs text-slate-300">Excursión natural y aguas termales.</p>
+                    <div class="flex justify-between items-start">
+                        <div><span class="text-xs font-bold text-amber-500">05:30 AM</span><h3 class="font-bold text-white text-sm mt-0.5">Grutas de Tolantongo</h3></div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d4-1', 'done')" id="btn-d4-1-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d4-1', 'none')" id="btn-d4-1-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Visita a pozas termales y túneles en Hidalgo.</p>
                 </div>
             </div>
+
+            <!-- DÍA 5 -->
             <div id="day-content-5" class="day-pane space-y-3">
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
-                    <h3 class="font-bold text-amber-400 text-sm">Día 5: Zócalo, Chapultepec y Retorno</h3>
-                    <p class="text-xs text-slate-300">Último recorrido y vuelo de regreso a Bogotá.</p>
+                    <div class="flex justify-between items-start">
+                        <div><span class="text-xs font-bold text-amber-500">09:00 AM</span><h3 class="font-bold text-white text-sm mt-0.5">Zócalo, Chapultepec & Retorno</h3></div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d5-1', 'done')" id="btn-d5-1-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d5-1', 'none')" id="btn-d5-1-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Último día de compras y traslado al aeropuerto MEX.</p>
                 </div>
             </div>
         </div>
@@ -278,7 +296,7 @@
         <!-- PESTAÑA 3: CONTACTOS -->
         <div id="tab-contactos" class="tab-content space-y-4">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
-                <h3 class="font-bold text-amber-400 text-sm"><i class="fa-solid fa-address-book"></i> Directorio Único</h3>
+                <h3 class="font-bold text-amber-400 text-sm"><i class="fa-solid fa-address-book"></i> Directorio de Contactos</h3>
                 <div class="space-y-2 text-xs">
                     <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
                         <p class="font-bold text-white">Hotel Emporio Reforma</p>
@@ -287,6 +305,10 @@
                     <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
                         <p class="font-bold text-white">Amigo Tours</p>
                         <a href="tel:+525555125207" class="text-amber-400 font-bold">+52 55 5512 5207</a>
+                    </div>
+                    <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                        <p class="font-bold text-white">Emergencias (CDMX)</p>
+                        <a href="tel:911" class="text-rose-400 font-bold">911</a>
                     </div>
                 </div>
             </div>
@@ -309,22 +331,22 @@
         <!-- PESTAÑA 5: PRESUPUESTO -->
         <div id="tab-presupuesto" class="tab-content space-y-4">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
-                <h3 class="font-bold text-amber-400 text-sm">Presupuesto y Gastos</h3>
-                <p class="text-xs text-slate-400">Control de gastos por persona (Jorge / Erika).</p>
+                <h3 class="font-bold text-amber-400 text-sm">Presupuesto y Gastos (Jorge / Erika)</h3>
+                <p class="text-xs text-slate-400">Control de gastos detallado para el viaje.</p>
             </div>
         </div>
 
         <!-- PESTAÑA 6: ANTES / DESPUÉS -->
         <div id="tab-antes" class="tab-content space-y-4">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
-                <h3 class="font-bold text-amber-400 text-sm">Antes del Viaje</h3>
-                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
-                    <span class="text-xs font-bold text-amber-500">Web Check-in Avianca</span>
-                    <button onclick="setActivityState('before-1', 'done')" id="btn-before-1-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300">✓ Realizada</button>
+                <h3 class="font-bold text-amber-400 text-sm">Antes del Viaje (Miércoles 11 Nov)</h3>
+                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center">
+                    <span class="text-xs text-slate-300">Web Check-in Avianca (CLYMCS)</span>
+                    <button onclick="setActivityState('before-1', 'done')" id="btn-before-1-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
                 </div>
             </div>
 
-            <!-- Bloque Después del Viaje con Botón Condicionado al 85% -->
+            <!-- Después del Viaje con Botón Condicionado al 85% -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
                 <div class="flex justify-between items-center border-b border-slate-800 pb-2">
                     <h3 class="font-bold text-amber-400 text-sm"><i class="fa-solid fa-suitcase"></i> Después del Viaje</h3>
@@ -387,7 +409,7 @@
         </div>
     </div>
 
-    <!-- Scripts de Firebase y Funcionalidad -->
+    <!-- Scripts -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDsmt2yYqYgqoLmzHTLkrd6psdP-5vkS-0",
@@ -402,7 +424,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        const activityIds = ['d1-1', 'd1-2', 'before-1'];
+        const activityIds = ['d1-1', 'd1-2', 'd2-1', 'd3-1', 'd4-1', 'd5-1', 'before-1'];
 
         function setActivityState(id, targetState) {
             const currentState = window.serverActivities && window.serverActivities[id] ? window.serverActivities[id] : null;
@@ -441,65 +463,4 @@
                 icon.className = "fa-solid fa-sun text-sm";
             } else {
                 html.classList.add('dark');
-                icon.className = "fa-solid fa-moon text-sm";
-            }
-        }
-
-        function updateCurrencyConverter() {
-            const input = document.getElementById('calc-input-mxn');
-            const result = document.getElementById('calc-result-cop');
-            const rate = parseFloat(document.getElementById('exchange-rate-input').value) || 230;
-            if (input && result && input.value) {
-                result.innerText = `$${Math.round(parseFloat(input.value) * rate).toLocaleString()} COP`;
-            }
-        }
-
-        function calculateCustomAmount() {
-            updateCurrencyConverter();
-        }
-
-        function clickTripDone() {
-            const tripBtn = document.getElementById('btn-trip-done');
-            if (tripBtn.getAttribute('data-unlocked') === 'true') {
-                document.getElementById('congrats-modal').classList.remove('hidden');
-            }
-        }
-
-        function closeCongratsModal() {
-            document.getElementById('congrats-modal').classList.add('hidden');
-        }
-
-        function updateUI() {
-            let doneCount = 0;
-            activityIds.forEach(id => {
-                const state = window.serverActivities && window.serverActivities[id] ? window.serverActivities[id] : null;
-                if (state === 'done') doneCount++;
-            });
-
-            const percent = Math.round((doneCount / activityIds.length) * 100) || 0;
-            document.getElementById('progress-text').innerText = `${percent}% Progreso`;
-            document.getElementById('progress-bar').style.width = percent + '%';
-
-            const tripBtn = document.getElementById('btn-trip-done');
-            const tripLockBadge = document.getElementById('trip-lock-badge');
-            const tripLockIcon = document.getElementById('trip-lock-icon');
-            const tripBtnText = document.getElementById('trip-btn-text');
-
-            if (percent >= 85) {
-                tripBtn.removeAttribute('disabled');
-                tripBtn.setAttribute('data-unlocked', 'true');
-                tripBtn.className = "px-3 py-1.5 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg transition flex items-center space-x-1.5 cursor-pointer";
-                tripLockBadge.className = "text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded font-semibold";
-                tripLockBadge.innerText = "🔓 ¡Desbloqueado!";
-                tripLockIcon.className = "fa-solid fa-check";
-                tripBtnText.innerText = "✓ Viaje Concluido (¡Clic aquí!)";
-            }
-        }
-
-        db.ref('actividades').on('value', (snapshot) => {
-            window.serverActivities = snapshot.val() || {};
-            updateUI();
-        });
-    </script>
-</body>
-</html>
+                icon.className = "fa-solid fa-moon
