@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CDMX 2026 - Itinerario Jorge & Erika (v19)</title>
+    <title>CDMX 2026 - Itinerario Jorge & Erika (v20)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -82,7 +82,7 @@
                     <i class="fa-solid fa-plane-departure text-lg"></i>
                 </div>
                 <div>
-                    <h1 class="font-bold text-sm text-white">CDMX 2026 • v19</h1>
+                    <h1 class="font-bold text-sm text-white">CDMX 2026 • v20</h1>
                     <p class="text-xs text-slate-400">Jorge Siatama & Erika Ruda</p>
                 </div>
             </div>
@@ -122,7 +122,7 @@
                 <div class="flex items-center space-x-3">
                     <span class="text-emerald-400 font-medium"><i class="fa-solid fa-circle-check"></i> <span id="inicio-done-count">0</span></span>
                     <span class="text-rose-400 font-medium"><i class="fa-solid fa-circle-xmark"></i> <span id="inicio-none-count">0</span></span>
-                    <span class="text-slate-300 font-medium">Total: <span id="inicio-total-count">41</span></span>
+                    <span class="text-slate-300 font-medium">Total: <span id="inicio-total-count">53</span></span>
                 </div>
             </div>
 
@@ -233,7 +233,7 @@
                 </div>
             </div>
 
-            <!-- Tarjeta de Gasto Real Acumulado (Dinámica) -->
+            <!-- Tarjeta de Gasto Real Acumulado con Desglose por Persona -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2 shadow-lg">
                 <div class="flex justify-between items-center">
                     <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-400">
@@ -246,6 +246,17 @@
                 <div>
                     <p class="text-xl font-extrabold text-white" id="inicio-gasto-real-text">$0 MXN</p>
                     <p class="text-[11px] font-medium text-slate-400 mt-0.5" id="inicio-gasto-real-cop">~ $0 COP (Según lo marcado)</p>
+                </div>
+                <!-- Desglose por Persona en Inicio -->
+                <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800 text-xs">
+                    <div class="bg-slate-950/80 p-2 rounded-xl border border-amber-500/20">
+                        <span class="text-[10px] text-amber-400 font-bold block"><i class="fa-solid fa-user"></i> Jorge:</span>
+                        <span class="font-bold text-white text-xs" id="inicio-jorge-total">$0 MXN</span>
+                    </div>
+                    <div class="bg-slate-950/80 p-2 rounded-xl border border-purple-500/20">
+                        <span class="text-[10px] text-purple-400 font-bold block"><i class="fa-solid fa-user"></i> Erika:</span>
+                        <span class="font-bold text-white text-xs" id="inicio-erika-total">$0 MXN</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1328,20 +1339,20 @@
             </div>
         </div>
 
-        <!-- PESTAÑA 4: PRESUPUESTO Y SOUVENIRS -->
+        <!-- PESTAÑA 4: PRESUPUESTO Y SOUVENIRS CON SELECCIÓN DE PAGADOR (JORGE / ERIKA) -->
         <div id="tab-presupuesto" class="tab-content space-y-4">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
                 <div class="flex justify-between items-center border-b border-slate-800 pb-2">
                     <div>
                         <h3 class="font-bold text-amber-400 text-sm"><i class="fa-solid fa-wallet"></i> Presupuesto Interactivo (2 Pax)</h3>
-                        <p class="text-[10px] text-slate-400">Selecciona Realizada o No para recalcular el total</p>
+                        <p class="text-[10px] text-slate-400">Selecciona quién realiza la compra para calcular el total individual</p>
                     </div>
                     <button onclick="resetBudget()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-semibold px-2 py-1 rounded-lg transition">
                         Reiniciar
                     </button>
                 </div>
 
-                <!-- Lista de Gastos con Botones -->
+                <!-- Lista de Gastos con Botones Jorge / Erika / No -->
                 <div class="text-xs space-y-3 text-slate-300 divide-y divide-slate-800" id="budget-items-container">
                     <!-- Item 1 -->
                     <div class="pt-2 flex flex-col space-y-1.5 budget-row" data-mxn="250" data-cop="57500">
@@ -1350,7 +1361,8 @@
                             <span class="text-amber-400 font-bold">$250 MXN (~$57.500 COP)</span>
                         </div>
                         <div class="flex justify-end space-x-1">
-                            <button onclick="setBudgetState('b1', 'done')" id="btn-b1-done" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setBudgetState('b1', 'jorge')" id="btn-b1-jorge" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-amber-600 transition">Jorge</button>
+                            <button onclick="setBudgetState('b1', 'erika')" id="btn-b1-erika" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-purple-600 transition">Erika</button>
                             <button onclick="setBudgetState('b1', 'none')" id="btn-b1-none" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
                         </div>
                     </div>
@@ -1362,7 +1374,8 @@
                             <span class="text-amber-400 font-bold">$500 MXN (~$115.000 COP)</span>
                         </div>
                         <div class="flex justify-end space-x-1">
-                            <button onclick="setBudgetState('b2', 'done')" id="btn-b2-done" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setBudgetState('b2', 'jorge')" id="btn-b2-jorge" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-amber-600 transition">Jorge</button>
+                            <button onclick="setBudgetState('b2', 'erika')" id="btn-b2-erika" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-purple-600 transition">Erika</button>
                             <button onclick="setBudgetState('b2', 'none')" id="btn-b2-none" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
                         </div>
                     </div>
@@ -1374,7 +1387,8 @@
                             <span class="text-amber-400 font-bold">$550 MXN (~$126.500 COP)</span>
                         </div>
                         <div class="flex justify-end space-x-1">
-                            <button onclick="setBudgetState('b3', 'done')" id="btn-b3-done" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setBudgetState('b3', 'jorge')" id="btn-b3-jorge" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-amber-600 transition">Jorge</button>
+                            <button onclick="setBudgetState('b3', 'erika')" id="btn-b3-erika" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-purple-600 transition">Erika</button>
                             <button onclick="setBudgetState('b3', 'none')" id="btn-b3-none" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
                         </div>
                     </div>
@@ -1386,7 +1400,8 @@
                             <span class="text-amber-400 font-bold">$250 MXN (~$57.500 COP)</span>
                         </div>
                         <div class="flex justify-end space-x-1">
-                            <button onclick="setBudgetState('b4', 'done')" id="btn-b4-done" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setBudgetState('b4', 'jorge')" id="btn-b4-jorge" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-amber-600 transition">Jorge</button>
+                            <button onclick="setBudgetState('b4', 'erika')" id="btn-b4-erika" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-purple-600 transition">Erika</button>
                             <button onclick="setBudgetState('b4', 'none')" id="btn-b4-none" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
                         </div>
                     </div>
@@ -1398,7 +1413,8 @@
                             <span class="text-amber-400 font-bold">$200 MXN (~$46.000 COP)</span>
                         </div>
                         <div class="flex justify-end space-x-1">
-                            <button onclick="setBudgetState('b5', 'done')" id="btn-b5-done" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setBudgetState('b5', 'jorge')" id="btn-b5-jorge" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-amber-600 transition">Jorge</button>
+                            <button onclick="setBudgetState('b5', 'erika')" id="btn-b5-erika" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-purple-600 transition">Erika</button>
                             <button onclick="setBudgetState('b5', 'none')" id="btn-b5-none" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
                         </div>
                     </div>
@@ -1410,7 +1426,8 @@
                             <span class="text-amber-400 font-bold">$800 MXN (~$184.000 COP)</span>
                         </div>
                         <div class="flex justify-end space-x-1">
-                            <button onclick="setBudgetState('b6', 'done')" id="btn-b6-done" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setBudgetState('b6', 'jorge')" id="btn-b6-jorge" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-amber-600 transition">Jorge</button>
+                            <button onclick="setBudgetState('b6', 'erika')" id="btn-b6-erika" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-purple-600 transition">Erika</button>
                             <button onclick="setBudgetState('b6', 'none')" id="btn-b6-none" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
                         </div>
                     </div>
@@ -1422,7 +1439,8 @@
                             <span class="text-amber-400 font-bold">$300 MXN (~$69.000 COP)</span>
                         </div>
                         <div class="flex justify-end space-x-1">
-                            <button onclick="setBudgetState('b7', 'done')" id="btn-b7-done" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setBudgetState('b7', 'jorge')" id="btn-b7-jorge" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-amber-600 transition">Jorge</button>
+                            <button onclick="setBudgetState('b7', 'erika')" id="btn-b7-erika" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-purple-600 transition">Erika</button>
                             <button onclick="setBudgetState('b7', 'none')" id="btn-b7-none" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
                         </div>
                     </div>
@@ -1434,7 +1452,8 @@
                             <span class="text-amber-400 font-bold">$180 MXN (~$41.400 COP)</span>
                         </div>
                         <div class="flex justify-end space-x-1">
-                            <button onclick="setBudgetState('b8', 'done')" id="btn-b8-done" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setBudgetState('b8', 'jorge')" id="btn-b8-jorge" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-amber-600 transition">Jorge</button>
+                            <button onclick="setBudgetState('b8', 'erika')" id="btn-b8-erika" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-purple-600 transition">Erika</button>
                             <button onclick="setBudgetState('b8', 'none')" id="btn-b8-none" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
                         </div>
                     </div>
@@ -1446,7 +1465,8 @@
                             <span class="text-amber-400 font-bold">$180 MXN (~$41.400 COP)</span>
                         </div>
                         <div class="flex justify-end space-x-1">
-                            <button onclick="setBudgetState('b9', 'done')" id="btn-b9-done" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setBudgetState('b9', 'jorge')" id="btn-b9-jorge" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-amber-600 transition">Jorge</button>
+                            <button onclick="setBudgetState('b9', 'erika')" id="btn-b9-erika" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-purple-600 transition">Erika</button>
                             <button onclick="setBudgetState('b9', 'none')" id="btn-b9-none" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
                         </div>
                     </div>
@@ -1458,7 +1478,8 @@
                             <span class="text-amber-400 font-bold">$500 MXN (~$115.000 COP)</span>
                         </div>
                         <div class="flex justify-end space-x-1">
-                            <button onclick="setBudgetState('b10', 'done')" id="btn-b10-done" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setBudgetState('b10', 'jorge')" id="btn-b10-jorge" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-amber-600 transition">Jorge</button>
+                            <button onclick="setBudgetState('b10', 'erika')" id="btn-b10-erika" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-purple-600 transition">Erika</button>
                             <button onclick="setBudgetState('b10', 'none')" id="btn-b10-none" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
                         </div>
                     </div>
@@ -1470,7 +1491,8 @@
                             <span class="text-amber-400 font-bold">$80 MXN (~$18.400 COP)</span>
                         </div>
                         <div class="flex justify-end space-x-1">
-                            <button onclick="setBudgetState('b11', 'done')" id="btn-b11-done" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setBudgetState('b11', 'jorge')" id="btn-b11-jorge" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-amber-600 transition">Jorge</button>
+                            <button onclick="setBudgetState('b11', 'erika')" id="btn-b11-erika" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-purple-600 transition">Erika</button>
                             <button onclick="setBudgetState('b11', 'none')" id="btn-b11-none" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
                         </div>
                     </div>
@@ -1482,7 +1504,8 @@
                             <span class="text-amber-400 font-bold">$150 - $520 MXN (~$34.500 - $119.600 COP)</span>
                         </div>
                         <div class="flex justify-end space-x-1">
-                            <button onclick="setBudgetState('b12', 'done')" id="btn-b12-done" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setBudgetState('b12', 'jorge')" id="btn-b12-jorge" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-amber-600 transition">Jorge</button>
+                            <button onclick="setBudgetState('b12', 'erika')" id="btn-b12-erika" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-purple-600 transition">Erika</button>
                             <button onclick="setBudgetState('b12', 'none')" id="btn-b12-none" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
                         </div>
                     </div>
@@ -1494,7 +1517,8 @@
                             <span class="text-amber-400 font-bold">$740 - $850 MXN (~$170.200 - $195.500 COP)</span>
                         </div>
                         <div class="flex justify-end space-x-1">
-                            <button onclick="setBudgetState('b13', 'done')" id="btn-b13-done" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setBudgetState('b13', 'jorge')" id="btn-b13-jorge" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-amber-600 transition">Jorge</button>
+                            <button onclick="setBudgetState('b13', 'erika')" id="btn-b13-erika" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-purple-600 transition">Erika</button>
                             <button onclick="setBudgetState('b13', 'none')" id="btn-b13-none" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
                         </div>
                     </div>
@@ -1506,16 +1530,30 @@
                             <span class="text-amber-400 font-bold">$1.100 - $1.950 MXN (~$253.000 - $448.500 COP)</span>
                         </div>
                         <div class="flex justify-end space-x-1">
-                            <button onclick="setBudgetState('b14', 'done')" id="btn-b14-done" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setBudgetState('b14', 'jorge')" id="btn-b14-jorge" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-amber-600 transition">Jorge</button>
+                            <button onclick="setBudgetState('b14', 'erika')" id="btn-b14-erika" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-purple-600 transition">Erika</button>
                             <button onclick="setBudgetState('b14', 'none')" id="btn-b14-none" class="px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Caja de Total Dinámico -->
-                <div class="mt-3 p-3 bg-slate-950 rounded-xl border border-amber-500/30 text-center">
+                <!-- Caja de Total Dinámico Desglosado -->
+                <div class="mt-3 p-3 bg-slate-950 rounded-xl border border-amber-500/30 text-center space-y-2">
                     <p class="text-xs text-slate-400">COSTO TOTAL SELECCIONADO (DINÁMICO):</p>
-                    <p class="text-sm font-extrabold text-amber-400 mt-0.5" id="budget-total-text">$0 MXN (~ $0 COP)</p>
+                    <p class="text-sm font-extrabold text-amber-400" id="budget-total-text">$0 MXN (~ $0 COP)</p>
+                    
+                    <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800/80 text-xs text-left">
+                        <div class="bg-amber-950/20 p-2 rounded-lg border border-amber-500/30">
+                            <span class="text-[10px] text-amber-400 font-bold block"><i class="fa-solid fa-user"></i> Total Jorge:</span>
+                            <span class="font-bold text-white" id="budget-jorge-text">$0 MXN</span>
+                            <span class="text-[9px] text-slate-400 block" id="budget-jorge-cop">~$0 COP</span>
+                        </div>
+                        <div class="bg-purple-950/20 p-2 rounded-lg border border-purple-500/30">
+                            <span class="text-[10px] text-purple-400 font-bold block"><i class="fa-solid fa-user"></i> Total Erika:</span>
+                            <span class="font-bold text-white" id="budget-erika-text">$0 MXN</span>
+                            <span class="text-[9px] text-slate-400 block" id="budget-erika-cop">~$0 COP</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1654,7 +1692,7 @@
         </div>
     </div>
 
-    <!-- Script de Interactividad y Firebase -->
+    <!-- Script de Interactividad y Firebase con Soporte Multiusuario (Jorge / Erika) -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDsmt2yYqYgqoLmzHTLkrd6psdP-5vkS-0",
@@ -1707,42 +1745,72 @@
         function updateBudgetUI() {
             let totalMxn = 0;
             let totalCop = 0;
+            let jorgeMxn = 0;
+            let jorgeCop = 0;
+            let erikaMxn = 0;
+            let erikaCop = 0;
+
             const rows = document.querySelectorAll('.budget-row');
 
             rows.forEach((row, index) => {
                 const id = budgetIds[index];
                 const state = window.serverBudget && window.serverBudget[id] ? window.serverBudget[id] : null;
-                const btnDone = document.getElementById('btn-' + id + '-done');
+                const btnJorge = document.getElementById('btn-' + id + '-jorge');
+                const btnErika = document.getElementById('btn-' + id + '-erika');
                 const btnNone = document.getElementById('btn-' + id + '-none');
                 
-                if (btnDone && btnNone) {
-                    btnDone.className = "px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition";
+                if (btnJorge && btnErika && btnNone) {
+                    btnJorge.className = "px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-amber-600 transition";
+                    btnErika.className = "px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-purple-600 transition";
                     btnNone.className = "px-2 py-0.5 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition";
 
-                    // CORRECCIÓN CLAVE: Solo suma si el estado es exactamente 'done' (marcado por el usuario)
-                    if (state === 'done') {
-                        btnDone.className = "px-2 py-0.5 text-[10px] font-semibold rounded bg-emerald-600 text-white shadow";
-                        totalMxn += parseInt(row.getAttribute('data-mxn'));
-                        totalCop += parseInt(row.getAttribute('data-cop'));
+                    const itemMxn = parseInt(row.getAttribute('data-mxn')) || 0;
+                    const itemCop = parseInt(row.getAttribute('data-cop')) || 0;
+
+                    if (state === 'jorge') {
+                        btnJorge.className = "px-2 py-0.5 text-[10px] font-semibold rounded bg-amber-500 text-slate-950 font-bold shadow";
+                        jorgeMxn += itemMxn;
+                        jorgeCop += itemCop;
+                        totalMxn += itemMxn;
+                        totalCop += itemCop;
+                    } else if (state === 'erika') {
+                        btnErika.className = "px-2 py-0.5 text-[10px] font-semibold rounded bg-purple-600 text-white font-bold shadow";
+                        erikaMxn += itemMxn;
+                        erikaCop += itemCop;
+                        totalMxn += itemMxn;
+                        totalCop += itemCop;
                     } else if (state === 'none') {
-                        btnNone.className = "px-2 py-0.5 text-[10px] font-semibold rounded bg-rose-600 text-white shadow";
+                        btnNone.className = "px-2 py-0.5 text-[10px] font-semibold rounded bg-rose-600 text-white font-bold shadow";
                     }
                 }
             });
 
+            // Actualizar Totales Pestaña Presupuesto
             const totalText = document.getElementById('budget-total-text');
             if (totalText) {
                 totalText.innerText = `$${totalMxn.toLocaleString()} MXN (~ $${totalCop.toLocaleString()} COP)`;
             }
 
+            const jorgeText = document.getElementById('budget-jorge-text');
+            const jorgeCopText = document.getElementById('budget-jorge-cop');
+            if (jorgeText) jorgeText.innerText = `$${jorgeMxn.toLocaleString()} MXN`;
+            if (jorgeCopText) jorgeCopText.innerText = `~$${jorgeCop.toLocaleString()} COP`;
+
+            const erikaText = document.getElementById('budget-erika-text');
+            const erikaCopText = document.getElementById('budget-erika-cop');
+            if (erikaText) erikaText.innerText = `$${erikaMxn.toLocaleString()} MXN`;
+            if (erikaCopText) erikaCopText.innerText = `~$${erikaCop.toLocaleString()} COP`;
+
+            // Actualizar Totales Pestaña Inicio
             const inicioGastoMxn = document.getElementById('inicio-gasto-real-text');
             const inicioGastoCop = document.getElementById('inicio-gasto-real-cop');
-            if (inicioGastoMxn) {
-                inicioGastoMxn.innerText = `$${totalMxn.toLocaleString()} MXN`;
-            }
-            if (inicioGastoCop) {
-                inicioGastoCop.innerText = `~ $${totalCop.toLocaleString()} COP (Según lo marcado)`;
-            }
+            if (inicioGastoMxn) inicioGastoMxn.innerText = `$${totalMxn.toLocaleString()} MXN`;
+            if (inicioGastoCop) inicioGastoCop.innerText = `~ $${totalCop.toLocaleString()} COP (Según lo marcado)`;
+
+            const inicioJorge = document.getElementById('inicio-jorge-total');
+            const inicioErika = document.getElementById('inicio-erika-total');
+            if (inicioJorge) inicioJorge.innerText = `$${jorgeMxn.toLocaleString()} MXN`;
+            if (inicioErika) inicioErika.innerText = `$${erikaMxn.toLocaleString()} MXN`;
         }
 
         function openEmergencyModal() {
