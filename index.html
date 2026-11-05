@@ -19,15 +19,15 @@
         }
     </script>
     <style>
-   .tab-content { display: none; }
+        .tab-content { display: none; }
         .tab-content.active { display: block; }
         .day-pane { display: none; }
         .day-pane.active { display: block; }
         
-        /* Transición suave para el cambio de tema */
+        /* Transición para el cambio de tema */
         html { transition: background-color 0.3s ease, color 0.3s ease; }
 
-        /* MODO CLARO (Por defecto cuando no está la clase .dark) */
+        /* Estilos de Modo Claro */
         html:not(.dark) {
             background-color: #f8fafc !important;
             color: #0f172a !important;
@@ -64,6 +64,10 @@
             background-color: #e2e8f0 !important;
             color: #0f172a !important;
         }
+        html:not(.dark) #emergency-modal > div {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+        }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen pb-24">
@@ -80,13 +84,14 @@
                     <p class="text-xs text-slate-400">Jorge Siatama & Erika Ruda</p>
                 </div>
             </div>
-            <!-- Controles superiores (Tema y Emergencia) y Barra de Progreso -->
+            <!-- Controles superiores -->
             <div class="flex items-center space-x-3">
                 <div class="flex items-center space-x-1.5">
                    <button onclick="toggleTheme()" class="bg-slate-800 hover:bg-slate-700 text-amber-400 p-2 rounded-xl text-xs transition" title="Cambiar tema">
                         <i class="fa-solid fa-moon text-sm" id="theme-icon"></i>
                    </button>
-                    <button onclick="alert('Llamada de Emergencia: 911\nHotel Emporio: +52 55 5566 7766\nAmigo Tours: +52 55 4563 8246')" class="bg-rose-600/20 hover:bg-rose-600/40 text-rose-400 p-2 rounded-xl text-xs transition border border-rose-500/30" title="Emergencias">
+                    <!-- Botón Emergencia con Modal -->
+                    <button onclick="openEmergencyModal()" class="bg-rose-600/20 hover:bg-rose-600/40 text-rose-400 p-2 rounded-xl text-xs transition border border-rose-500/30" title="Emergencias">
                         <i class="fa-solid fa-triangle-exclamation"></i>
                     </button>
                 </div>
@@ -106,7 +111,7 @@
         <!-- PESTAÑA 1: INICIO -->
         <div id="tab-inicio" class="tab-content active space-y-4">
             
-            <!-- Barra de Progreso del Itinerario (Correctamente ubicada dentro del Inicio) -->
+            <!-- Barra de Progreso del Itinerario -->
             <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 flex justify-between items-center shadow text-xs">
                 <div class="flex items-center space-x-2 text-amber-500 font-semibold">
                     <i class="fa-solid fa-chart-pie"></i>
@@ -128,7 +133,7 @@
                 <span class="text-xs bg-amber-500/20 text-amber-400 font-bold px-2.5 py-1 rounded-lg border border-amber-500/30">CLYMCS</span>
             </div>
 
-            <!-- Tarjeta de Vuelos Base (Diseño Detallado) -->
+            <!-- Tarjeta de Vuelos Base -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-4 shadow-lg">
                 <div class="flex justify-between items-center border-b border-slate-800 pb-2">
                     <span class="text-xs font-bold uppercase tracking-wider text-amber-500"><i class="fa-solid fa-plane"></i> Vuelos Base • Avianca</span>
@@ -188,7 +193,7 @@
                 </div>
             </div>
 
-            <!-- Tarjeta de Alojamiento Base (Con Botón de Llamada) -->
+            <!-- Tarjeta de Alojamiento Base -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3 shadow-lg">
                 <div class="flex justify-between items-center border-b border-slate-800 pb-2">
                     <span class="text-xs font-bold uppercase tracking-wider text-amber-500"><i class="fa-solid fa-hotel"></i> Alojamiento Base</span>
@@ -1275,9 +1280,53 @@
         </div>
     </nav>
 
-    <!-- Script de Interactividad y Memoria Local -->
+    <!-- VENTANA MODAL FLOTANTE DE EMERGENCIAS -->
+    <div id="emergency-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-xs w-full text-center space-y-4 shadow-2xl relative animate-in fade-in zoom-in duration-200">
+            <!-- Icono de escudo superior -->
+            <div class="mx-auto w-14 h-14 bg-rose-950/80 border border-rose-600/30 text-rose-500 rounded-full flex items-center justify-center text-2xl shadow-lg">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            
+            <!-- Título y Descripción -->
+            <div>
+                <h3 class="text-base font-bold text-white">Contactos de Emergencia</h3>
+                <p class="text-xs text-slate-400 mt-1">Acceso directo rápido en CDMX</p>
+            </div>
+
+            <!-- Botones de Acción Telefónica -->
+            <div class="space-y-2.5 pt-1">
+                <a href="tel:911" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 px-4 rounded-2xl text-xs flex items-center justify-center space-x-2 transition shadow-lg shadow-rose-600/20">
+                    <i class="fa-solid fa-phone text-sm"></i>
+                    <span>Llamar al 911 (México)</span>
+                </a>
+                <a href="tel:+525555667766" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-3 px-4 rounded-2xl text-xs flex items-center justify-center space-x-2 transition border border-slate-700">
+                    <i class="fa-solid fa-building text-sm text-slate-400"></i>
+                    <span>Hotel Emporio Reforma</span>
+                </a>
+            </div>
+
+            <!-- Enlace para cerrar ventana -->
+            <div class="pt-2">
+                <button onclick="closeEmergencyModal()" class="text-xs text-slate-400 hover:text-white underline transition">
+                    Cerrar ventana
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script de Interactividad -->
     <script>
         const activityIds = ['d1-1', 'd1-2', 'd1-3', 'd1-4', 'd1-5', 'd1-6', 'd1-7', 'd1-8', 'd1-9', 'd1-10', 'd1-11', 'd1-12', 'd2-1', 'd2-2', 'd2-3', 'd2-4', 'd2-5', 'd2-6', 'd2-7', 'd2-8', 'd2-9', 'd2-10', 'd2-11', 'd2-12', 'd2-13', 'd3-1', 'd3-2', 'd3-3', 'd3-4', 'd3-5', 'd3-6', 'd3-7', 'd3-8', 'd3-9', 'd3-10', 'd4-1', 'd4-2', 'd4-3', 'd4-4', 'd4-5', 'd4-6', 'd5-1', 'd5-2', 'd5-3', 'd5-4', 'd5-5', 'd5-6', 'd5-7', 'd5-8'];
+
+        /* Funciones del Modal de Emergencia */
+        function openEmergencyModal() {
+            document.getElementById('emergency-modal').classList.remove('hidden');
+        }
+
+        function closeEmergencyModal() {
+            document.getElementById('emergency-modal').classList.add('hidden');
+        }
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -1302,9 +1351,8 @@
         }
 
         function toggleTheme() {
-         const html = document.documentElement;
+            const html = document.documentElement;
             const icon = document.getElementById('theme-icon');
-            
             if (html.classList.contains('dark')) {
                 html.classList.remove('dark');
                 icon.className = "fa-solid fa-sun text-sm";
@@ -1344,13 +1392,11 @@
 
             const percent = Math.round((doneCount / activityIds.length) * 100);
             
-            // Actualizar barra superior general
             if(document.getElementById('progress-text')) {
                 document.getElementById('progress-text').innerText = percent + '% Progreso';
                 document.getElementById('progress-bar').style.width = percent + '%';
             }
 
-            // Actualizar contadores en la tarjeta de inicio
             if(document.getElementById('inicio-done-count')) {
                 document.getElementById('inicio-done-count').innerText = doneCount;
                 document.getElementById('inicio-none-count').innerText = noneCount;
