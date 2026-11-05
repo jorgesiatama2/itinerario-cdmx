@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDMX 2026 - Itinerario Jorge & Erika (v19)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#fffbeb', 100: '#fef3c7', 500: '#f59e0b', 600: '#d97706', 700: '#b45309' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+   .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .day-pane { display: none; }
+        .day-pane.active { display: block; }
+        
+        /* Transición suave para el cambio de tema */
+        html { transition: background-color 0.3s ease, color 0.3s ease; }
+
+        /* MODO CLARO (Por defecto cuando no está la clase .dark) */
+        html:not(.dark) {
+            background-color: #f8fafc !important;
+            color: #0f172a !important;
+        }
+        html:not(.dark) body {
+            background-color: #f8fafc !important;
+            color: #0f172a !important;
+        }
+        html:not(.dark) header, 
+        html:not(.dark) nav, 
+        html:not(.dark) .bg-slate-900 {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            color: #0f172a !important;
+        }
+        html:not(.dark) .text-slate-100,
+        html:not(.dark) .text-slate-200,
+        html:not(.dark) .text-slate-300 {
+            color: #1e293b !important;
+        }
+        html:not(.dark) .text-slate-400 {
+            color: #64748b !important;
+        }
+        html:not(.dark) .bg-slate-950\/60,
+        html:not(.dark) .bg-slate-950\/50,
+        html:not(.dark) .bg-slate-950 {
+            background-color: #f1f5f9 !important;
+            border-color: #cbd5e1 !important;
+        }
+        html:not(.dark) .border-slate-800 {
+            border-color: #e2e8f0 !important;
+        }
+        html:not(.dark) button.bg-slate-800 {
+            background-color: #e2e8f0 !important;
+            color: #0f172a !important;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen pb-24">
+
+    <!-- Header -->
+    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50 px-4 py-3">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-amber-500 text-slate-950 p-2 rounded-xl font-bold">
+                    <i class="fa-solid fa-plane-departure text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-sm text-white">CDMX 2026 • v19</h1>
+                    <p class="text-xs text-slate-400">Jorge Siatama & Erika Ruda</p>
+                </div>
+            </div>
+            <!-- Controles superiores (Tema y Emergencia) y Barra de Progreso -->
+            <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-1.5">
+                   <button onclick="toggleTheme()" class="bg-slate-800 hover:bg-slate-700 text-amber-400 p-2 rounded-xl text-xs transition" title="Cambiar tema">
+                        <i class="fa-solid fa-moon text-sm" id="theme-icon"></i>
+                   </button>
+                    <button onclick="alert('Llamada de Emergencia: 911\nHotel Emporio: +52 55 5566 7766\nAmigo Tours: +52 55 4563 8246')" class="bg-rose-600/20 hover:bg-rose-600/40 text-rose-400 p-2 rounded-xl text-xs transition border border-rose-500/30" title="Emergencias">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </button>
+                </div>
+                <div class="text-right">
+                    <span id="progress-text" class="text-xs font-bold text-amber-400">0% Progreso</span>
+                    <div class="w-20 bg-slate-800 h-2 rounded-full mt-1 overflow-hidden">
+                        <div id="progress-bar" class="bg-amber-500 h-full w-0 transition-all duration-300"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-md mx-auto p-4 space-y-4">
+
+        <!-- PESTAÑA 1: INICIO -->
+        <div id="tab-inicio" class="tab-content active space-y-4">
+            
+            <!-- Barra de Progreso del Itinerario (Correctamente ubicada dentro del Inicio) -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 flex justify-between items-center shadow text-xs">
+                <div class="flex items-center space-x-2 text-amber-500 font-semibold">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Progreso del Itinerario:</span>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <span class="text-emerald-400 font-medium"><i class="fa-solid fa-circle-check"></i> <span id="inicio-done-count">0</span></span>
+                    <span class="text-rose-400 font-medium"><i class="fa-solid fa-circle-xmark"></i> <span id="inicio-none-count">0</span></span>
+                    <span class="text-slate-300 font-medium">Total: <span id="inicio-total-count">37</span></span>
+                </div>
+            </div>
+
+            <!-- Check-in Rápido -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 flex justify-between items-center shadow">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-ticket text-amber-500"></i>
+                    <span class="text-xs text-slate-300 font-semibold">Check-in Avianca:</span>
+                </div>
+                <span class="text-xs bg-amber-500/20 text-amber-400 font-bold px-2.5 py-1 rounded-lg border border-amber-500/30">CLYMCS</span>
+            </div>
+
+            <!-- Tarjeta de Vuelos Base (Diseño Detallado) -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-4 shadow-lg">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                    <span class="text-xs font-bold uppercase tracking-wider text-amber-500"><i class="fa-solid fa-plane"></i> Vuelos Base • Avianca</span>
+                    <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-amber-400 font-semibold">Ref: CLYMCS</span>
+                </div>
+
+                <!-- Trayecto Ida -->
+                <div class="space-y-1">
+                    <div class="flex justify-between text-xs font-semibold text-white">
+                        <span>Ida: Vuelo AV72</span>
+                        <span class="text-slate-400 text-[11px]">Jue 12 Nov 2026</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-950/60 p-3 rounded-xl border border-slate-800/80">
+                        <div>
+                            <p class="font-bold text-sm text-white">BOG</p>
+                            <p class="text-[10px] text-slate-400">08:10 AM</p>
+                        </div>
+                        <div class="text-center flex-1 px-3">
+                            <p class="text-[10px] text-slate-400">5h 05m (Directo)</p>
+                            <div class="relative flex items-center justify-center my-1">
+                                <div class="w-full border-t border-slate-700"></div>
+                                <i class="fa-solid fa-plane text-amber-500 text-xs absolute bg-slate-950 px-1"></i>
+                            </div>
+                            <p class="text-[9px] text-emerald-400 font-medium">Equipaje Mano Incluido</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-sm text-white">MEX</p>
+                            <p class="text-[10px] text-slate-400">12:15 PM</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trayecto Vuelta -->
+                <div class="space-y-1 pt-2 border-t border-slate-800/60">
+                    <div class="flex justify-between text-xs font-semibold text-white">
+                        <span>Vuelta: Vuelo AV23</span>
+                        <span class="text-slate-400 text-[11px]">Lun 16 Nov 2026</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-950/60 p-3 rounded-xl border border-slate-800/80">
+                        <div>
+                            <p class="font-bold text-sm text-white">MEX</p>
+                            <p class="text-[10px] text-slate-400">11:20 PM</p>
+                        </div>
+                        <div class="text-center flex-1 px-3">
+                            <p class="text-[10px] text-slate-400">4h 40m (Directo)</p>
+                            <div class="relative flex items-center justify-center my-1">
+                                <div class="w-full border-t border-slate-700"></div>
+                                <i class="fa-solid fa-plane text-amber-500 text-xs absolute bg-slate-950 px-1 transform rotate-180"></i>
+                            </div>
+                            <p class="text-[9px] text-amber-400 font-medium">Llegada BOG: 17 Nov 05:00 AM</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-sm text-white">BOG</p>
+                            <p class="text-[10px] text-slate-400">05:00 AM</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta de Alojamiento Base (Con Botón de Llamada) -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3 shadow-lg">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                    <span class="text-xs font-bold uppercase tracking-wider text-amber-500"><i class="fa-solid fa-hotel"></i> Alojamiento Base</span>
+                    <a href="tel:+525555667766" class="bg-slate-800 hover:bg-slate-700 text-slate-200 p-2 rounded-xl text-xs transition" title="Llamar al Hotel">
+                        <i class="fa-solid fa-phone"></i>
+                    </a>
+                </div>
+                <div>
+                    <h3 class="font-bold text-white text-base">Hotel Emporio Reforma</h3>
+                    <p class="text-xs text-slate-400 mt-0.5"><i class="fa-solid fa-location-dot text-rose-500"></i> Av. Paseo de la Reforma No. 124, Col. Juárez</p>
+                </div>
+                <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-800/60 text-xs">
+                    <div class="bg-slate-950/50 p-2 rounded-xl border border-slate-800/50">
+                        <span class="text-[10px] text-slate-400 block">Estancia:</span>
+                        <span class="font-semibold text-white">4 Noches (Buffet Incl.)</span>
+                    </div>
+                    <div class="bg-slate-950/50 p-2 rounded-xl border border-slate-800/50">
+                        <span class="text-[10px] text-slate-400 block">Guarda-equipaje:</span>
+                        <span class="font-semibold text-emerald-400">Gratuito Día 5</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta de Presupuesto Sugerido -->
+            <div class="bg-amber-600 rounded-2xl p-4 text-slate-950 space-y-2 shadow-xl">
+                <div class="flex justify-between items-center">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-amber-950">Presupuesto Sugerido (2 Pax)</span>
+                    <button onclick="switchTab('presupuesto')" class="text-xs bg-slate-950 text-amber-400 hover:bg-slate-900 font-bold px-3 py-1 rounded-xl transition shadow">
+                        Ver Desglose
+                    </button>
+                </div>
+                <div>
+                    <p class="text-xl font-extrabold text-slate-950">$8.050 - $9.380 MXN</p>
+                    <p class="text-[11px] font-medium text-amber-950 mt-0.5">~ $1.85M - $2.15M COP (Planes + Compras)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PESTAÑA 2: ITINERARIO -->
+        <div id="tab-itinerario" class="tab-content space-y-4">
+            <!-- Selector de Días -->
+            <div class="flex space-x-1 overflow-x-auto pb-2 scrollbar-none">
+                <button onclick="switchDay(1)" id="day-btn-1" class="day-tab px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 whitespace-nowrap">Día 1 (Jue)</button>
+                <button onclick="switchDay(2)" id="day-btn-2" class="day-tab px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-400 whitespace-nowrap">Día 2 (Vie)</button>
+                <button onclick="switchDay(3)" id="day-btn-3" class="day-tab px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-400 whitespace-nowrap">Día 3 (Sáb)</button>
+                <button onclick="switchDay(4)" id="day-btn-4" class="day-tab px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-400 whitespace-nowrap">Día 4 (Dom)</button>
+                <button onclick="switchDay(5)" id="day-btn-5" class="day-tab px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-900 text-slate-400 whitespace-nowrap">Día 5 (Lun)</button>
+            </div>
+
+            <!-- DÍA 1 -->
+            <div id="day-content-1" class="day-pane active space-y-3">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">03:00 AM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🟡 [SALIDA DESDE CASA] Alistarse para Salir</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d1-1', 'done')" id="btn-d1-1-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d1-1', 'none')" id="btn-d1-1-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Despertar, verificar maletas de mano, documentos (pasaportes) y preparativos finales en casa antes de tomar el transporte al aeropuerto.</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 Sin costo adicional</span>
+                        <span class="text-emerald-400">🟢 Muy Seguro (En casa)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">04:00 AM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🟡 [AUTODESPLAZAMIENTO] Tomar Uber al Aeropuerto</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d1-2', 'done')" id="btn-d1-2-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d1-2', 'none')" id="btn-d1-2-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Solicitar Uber desde casa hacia la Terminal 1 del Aeropuerto El Dorado (BOG). Se recomienda programar o pedir el vehículo con anticipación para llegar a las 05:10 AM.</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 Tarifa app Uber (Bogotá)</span>
+                        <span class="text-emerald-400">🟢 Muy Seguro (Traslado directo)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">05:10 AM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">Llegada al Aeropuerto El Dorado (BOG)</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d1-3', 'done')" id="btn-d1-3-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d1-3', 'none')" id="btn-d1-3-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Presentarse 3 horas antes en Terminal Internacional. Pasaportes y check-in con código: <strong>CLYMCS</strong>[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 Incluido en Reserva</span>
+                        <span class="text-emerald-400">🟢 Seguro (Aeropuerto)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">08:10 AM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">Despegue del Vuelo Avianca 72</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d1-4', 'done')" id="btn-d1-4-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d1-4', 'none')" id="btn-d1-4-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Vuelo directo Bogotá ➔ Ciudad de México (Duración: 5h 05m)[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 Incluido en Reserva</span>
+                        <span class="text-emerald-400">🟢 Seguro</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">12:15 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">Aterrizaje en Aeropuerto Benito Juárez (MEX)</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d1-5', 'done')" id="btn-d1-5-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d1-5', 'none')" id="btn-d1-5-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Pasar migración, recoger equipaje de mano y dirigirse a la salida.</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 Incluido en Reserva</span>
+                        <span class="text-emerald-400">🟢 Seguro</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">12:55 PM - 01:25 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">Traslado Privado al Hotel (Empresa KOI)</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d1-6', 'done')" id="btn-d1-6-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d1-6', 'none')" id="btn-d1-6-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Punto de encuentro: Terminal 1 (Puerta 7 int. / Puerta 3 nac.) o Terminal 2 (Puerta 3 int. / Puerta 4 nac.)[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 Incluido en Reserva</span>
+                        <span class="text-emerald-400">🟢 Seguro (Traslado oficial)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">02:30 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">Check-in en Hotel Emporio Reforma</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d1-7', 'done')" id="btn-d1-7-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d1-7', 'none')" id="btn-d1-7-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Dirección: Av. Paseo de la Reforma No. 124[cite: 7]. Descanso y acomodación.</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 Incluido en Reserva</span>
+                        <span class="text-emerald-400">🟢 Seguro</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">04:30 PM - 06:15 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🔹 [PLAN ADICIONAL] Caminata a Pie al Ángel & Aperitivo</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d1-8', 'done')" id="btn-d1-8-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d1-8', 'none')" id="btn-d1-8-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Caminata segura a pie por Av. Paseo de la Reforma desde el Hotel Emporio hasta el Ángel de la Independencia (800 m)[cite: 7]. Snacking en cafetería cercana.</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 $250 MXN ($57.500 COP)</span>
+                        <span class="text-emerald-400">🟢 Muy Seguro (Avenida principal)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">06:30 PM - 07:00 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🔹 [PLAN ADICIONAL] Llegada a Parada Turibus</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d1-9', 'done')" id="btn-d1-9-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d1-9', 'none')" id="btn-d1-9-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Llegada caminando al punto de abordaje en la glorieta del Ángel de la Independencia (frente a tienda Circle K)[cite: 7]. Recomendado: Turibus CDMX (Oficial) / Capital Bus. Llevar abrigo.</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 $0 MXN (Llegada a pie)</span>
+                        <span class="text-emerald-400">🟢 Muy Seguro (Zona turística)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">07:00 PM - 09:00 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🔹 [PLAN ADICIONAL] Recorrido Turibus Nocturno CDMX</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d1-10', 'done')" id="btn-d1-10-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d1-10', 'none')" id="btn-d1-10-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Paseo panorámico de 2 pisos apreciando Reforma, Ángel, Bellas Artes y Zócalo iluminados ($250 MXN c/u)[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 $500 MXN ($115.000 COP)</span>
+                        <span class="text-emerald-400">🟢 Muy Seguro (Bus turístico)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">09:15 PM - 11:00 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🔹 [PLAN ADICIONAL] Cerveza Artesanal en Fiebre de Malta</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d1-11', 'done')" id="btn-d1-11-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d1-11', 'none')" id="btn-d1-11-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Caminata de 3 min a Fiebre de Malta (Av. Paseo de la Reforma 222, PB). Ofrece burgers, tacos gurmé y cervezas artesanales. *Opción tradicional: 'La Casa de Toño' (Londres 144) o 'El Huequito'[cite: 7].*</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 $550 MXN ($126.500 COP)</span>
+                        <span class="text-emerald-400">🟢 Seguro (Corredor comercial)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">11:15 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🔹 [PLAN ADICIONAL] Regreso al Hotel & Descanso</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d1-12', 'done')" id="btn-d1-12-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d1-12', 'none')" id="btn-d1-12-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Caminata de 3 min de regreso al Hotel Emporio Reforma.</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 Sin costo adicional</span>
+                        <span class="text-emerald-400">🟢 Seguro (Tramos cortos iluminados)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DÍA 2 -->
+            <div id="day-content-2" class="day-pane space-y-3">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">07:10 AM - 07:45 AM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🟡 [AUTODESPLAZAMIENTO] Salida del Hotel a Miga Café</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d2-1', 'done')" id="btn-d2-1-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d2-1', 'none')" id="btn-d2-1-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">El tour NO recoge en el hotel. Opción A: Caminar 1.2 km (18 min) saliendo 7:10 AM por Reforma ➔ Bucareli ➔ Liverpool 174 (Miga Café). Opción B: Uber a las 7:25 AM ($60 MXN / 10 min)[cite: 7]. Estar antes de las 7:45 AM.</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 $0 a pie / ($60 MXN Uber)</span>
+                        <span class="text-emerald-400">🟢 Muy Seguro (Mañana transitada)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">07:50 AM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">Punto de Encuentro Oficial (Miga Café)</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d2-2', 'done')" id="btn-d2-2-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d2-2', 'none')" id="btn-d2-2-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Estar presente en Calle Liverpool 174 (Zona Rosa)[cite: 7]. Presentar pase de abordar de Amigo Tours. Contacto: +52 55 5512 5207[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 Incluido en Reserva</span>
+                        <span class="text-emerald-400">🟢 Seguro</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">08:00 AM - 10:30 AM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">Tour 1: Xochimilco & Paseo en Trajinera</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d2-3', 'done')" id="btn-d2-3-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d2-3', 'none')" id="btn-d2-3-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Traslado al sur de CDMX[cite: 7]. Recorrido en trajinera colorida por canales prehispánicos. Incluye ambiente festivo y música de mariachi flotante.</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 Incluido en Reserva</span>
+                        <span class="text-emerald-400">🟢 Seguro (Tour guiado oficial)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">10:30 AM - 11:30 AM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">Tour 2: Almuerzo Típico Mexicano en Xochimilco</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d2-4', 'done')" id="btn-d2-4-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d2-4', 'none')" id="btn-d2-4-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Disfrute de almuerzo incluido en restaurante tradicional o zona asignada por el operador (antojitos mexicanos / comida corrida típica)[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 Incluido en Reserva</span>
+                        <span class="text-emerald-400">🟢 Seguro (Establecimiento regulado)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">11:45 AM - 01:00 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">Tour 3: Recorrido panorámico por la UNAM</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d2-5', 'done')" id="btn-d2-5-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d2-5', 'none')" id="btn-d2-5-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Visita a Ciudad Universitaria. Parada en la emblemática Biblioteca Central (murales de Juan O'Gorman) y Estadio Olímpico[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 Incluido en Reserva</span>
+                        <span class="text-emerald-400">🟢 Seguro (Campus vigilado)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">01:15 PM - 03:30 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">Tour 4: Coyoacán y Casa Azul de Frida Kahlo</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d2-6', 'done')" id="btn-d2-6-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d2-6', 'none')" id="btn-d2-6-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Caminata guiada por calles empedradas, Plaza Hidalgo e Iglesia San Juan Bautista. Visita al interior de la Casa Azul de Frida Kahlo[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 Incluido en Reserva</span>
+                        <span class="text-emerald-400">🟢 Seguro (Zona turística)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">03:30 PM - 05:00 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🔹 [PLAN ADICIONAL] Comida / Antojos en Coyoacán</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d2-7', 'done')" id="btn-d2-7-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d2-7', 'none')" id="btn-d2-7-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Elegir 1: 1. Churros El Moro (Frontera 156) | 2. Tostadas en Mercado de Coyoacán | 3. Café El Jarocho & Cenaduría[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 $250 MXN ($57.500 COP)</span>
+                        <span class="text-emerald-400">🟢 Seguro</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">05:00 PM - 05:40 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🟡 [AUTODESPLAZAMIENTO] Regreso del Tour al Hotel</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d2-8', 'done')" id="btn-d2-8-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d2-8', 'none')" id="btn-d2-8-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">El bus finaliza en Miga Café. Retorno por cuenta propia: Caminar 1.2 km o tomar Uber ($60 MXN / 10 min)[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 $0 a pie / ($60 MXN Uber)</span>
+                        <span class="text-emerald-400">🟢 Muy Seguro (Tarde activa)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">05:40 PM - 07:15 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🔹 [PLAN ADICIONAL] Descanso y Cambio de Ropa en el Hotel</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d2-9', 'done')" id="btn-d2-9-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d2-9', 'none')" id="btn-d2-9-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300"><strong>RECOMENDACIÓN RECONOCIDA:</strong> Ir PRIMERO al hotel tras la caminata/tour de 8h. Permite guardar compras del día, refrescarse, usar el baño, abrigarse y salir descansados hacia la lucha libre[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 Sin costo adicional</span>
+                        <span class="text-emerald-400">🟢 Seguro (En el Hotel Emporio)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">07:20 PM - 07:50 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🔹 [PLAN ADICIONAL] Traslado en Uber a la Arena México</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d2-10', 'done')" id="btn-d2-10-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d2-10', 'none')" id="btn-d2-10-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Pedir Uber en el lobby del Hotel Emporio directamente hasta la Arena México (Dr. Lavista 187, Col. Doctores; 2.2 km / 15-20 min)[cite: 7]. Usar tarjeta registrada.</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 $100 MXN ($23.000 COP)</span>
+                        <span class="text-emerald-400">🟢 Seguro (Traslado directo)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">08:00 PM - 08:30 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🔹 [PLAN ADICIONAL] Llegada y Abordaje en Arena México</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d2-11', 'done')" id="btn-d2-11-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d2-11', 'none')" id="btn-d2-11-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Llegar 30 min antes. Comprar máscara de recuerdo en puestos exteriores ($100-$150 MXN) e ingresar a las gradas/preferente[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 $300 MXN (Souvenirs/snacks)</span>
+                        <span class="text-emerald-400">🟢 Seguro (Ambiente festivo)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">08:30 PM - 11:00 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🔹 [PLAN ADICIONAL] Función 'Viernes Espectacular CMLL'</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d2-12', 'done')" id="btn-d2-12-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d2-12', 'none')" id="btn-d2-12-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Disfrutar de la Lucha Libre Mexicana en la Arena México[cite: 7]. Recom. comprar entradas con anticipación en Ticketmaster México.</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 $800 MXN ($184.000 COP entradas)</span>
+                        <span class="text-emerald-400">🟢 Seguro (Dentro del recinto)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">11:15 PM - 11:40 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🔹 [PLAN ADICIONAL] Regreso en Uber al Hotel & Descanso</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d2-13', 'done')" id="btn-d2-13-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d2-13', 'none')" id="btn-d2-13-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Pedir Uber directamente en la puerta principal de la Arena México de regreso al Hotel Emporio Reforma.</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 $100 MXN ($23.000 COP)</span>
+                        <span class="text-amber-400">🟡 Precaución Moderada (Esperar Uber)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DÍA 3 -->
+            <div id="day-content-3" class="day-pane space-y-3">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">04:30 AM - 04:55 AM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🟡 [AUTODESPLAZAMIENTO] Salida del Hotel al Ángel</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d3-1', 'done')" id="btn-d3-1-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d3-1', 'none')" id="btn-d3-1-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Caminando 4:30 AM por Reforma hacia el Ángel (800 m / 10 min) o Uber ($60 MXN / 3 min)[cite: 7]. Estar antes de las 05:00 AM.</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 $0 a pie / ($60 MXN Uber)</span>
+                        <span class="text-emerald-400">🟢 Muy Seguro (Avenida principal)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">05:00 AM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">Punto de Encuentro Oficial (Ángel de la Independencia)</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d3-2', 'done')" id="btn-d3-2-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d3-2', 'none')" id="btn-d3-2-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Presentarse frente al Citibanamex / Glorieta. Presentar pase de abordar de Amigo Tours. Contacto: +52 55 5512 5207[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 Incluido en Reserva</span>
+                        <span class="text-emerald-400">🟢 Seguro</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">06:00 AM - 02:00 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">Vuelo en Globo y Teotihuacán</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d3-3', 'done')" id="btn-d3-3-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d3-3', 'none')" id="btn-d3-3-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Vuelo en globo aerostático, brindis, desayuno típico, zona arqueológica de Teotihuacán (Pirámide del Sol y de la Luna) y degustación[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 Incluido en Reserva</span>
+                        <span class="text-emerald-400">🟢 Seguro (Operador autorizado)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">02:30 PM - 04:30 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">Visita a la Basílica de Guadalupe</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d3-4', 'done')" id="btn-d3-4-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d3-4', 'none')" id="btn-d3-4-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Recorrido por la Antigua y Nueva Basílica, capillas y monumentos religiosos del complejo mariano[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 Incluido en Reserva</span>
+                        <span class="text-emerald-400">🟢 Seguro (Dentro del recinto)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">05:00 PM - 05:30 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🟡 [AUTODESPLAZAMIENTO] Regreso al Hotel</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d3-5', 'done')" id="btn-d3-5-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d3-5', 'none')" id="btn-d3-5-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">El bus de regreso los deja en el Ángel. Caminar 800m de regreso por Reforma o tomar Uber ($60 MXN)[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 $0 a pie / ($60 MXN Uber)</span>
+                        <span class="text-emerald-400">🟢 Muy Seguro (Avenida principal)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">05:30 PM - 07:30 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">Descanso y Cambio de Ropa en el Hotel</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d3-6', 'done')" id="btn-d3-6-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d3-6', 'none')" id="btn-d3-6-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Tiempo para descansar en la habitación del Hotel Emporio Reforma tras la excursión de todo el día.</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 Incluido en Reserva</span>
+                        <span class="text-emerald-400">🟢 Seguro</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">07:30 PM - 08:00 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🔹 [PLAN ADICIONAL] Traslado en Uber a Plaza Garibaldi</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d3-7', 'done')" id="btn-d3-7-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d3-7', 'none')" id="btn-d3-7-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Solicitar Uber directo desde el lobby del hotel hacia Plaza Garibaldi (Eje Central). <strong>Seguridad:</strong> Llegar exclusivamente en Uber puerta a puerta (no caminar por los alrededores oscuros)[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 $90 MXN ($20.700 COP)</span>
+                        <span class="text-emerald-400">🟢 Seguro (Traslado en vehículo)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">08:00 PM - 09:15 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🔹 [PLAN ADICIONAL] Museo del Tequila y el Mezcal (MUTEM)</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d3-8', 'done')" id="btn-d3-8-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d3-8', 'none')" id="btn-d3-8-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Entrada al museo interactivo en la Plaza Garibaldi[cite: 7]. Incluye recorrido y acceso a su terraza-bar con vista panorámica a la plaza.</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 $180 MXN ($41.400 COP)</span>
+                        <span class="text-emerald-400">🟢 Seguro (Recinto vigilado)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">09:15 PM - 11:15 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🔹 [PLAN ADICIONAL] Mariachis en Plaza Garibaldi & Salón Tenampa</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d3-9', 'done')" id="btn-d3-9-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d3-9', 'none')" id="btn-d3-9-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Disfrutar del ambiente musical, contratar canciones a mariachis y cenar/tomar algo en el legendario 'Salón Tenampa' o restaurantes con terraza vigilada[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 $500 MXN ($115.000 COP)</span>
+                        <span class="text-emerald-400">🟢 Seguro (Locales establecidos)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">11:30 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🔹 [PLAN ADICIONAL] Regreso en Uber al Hotel</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d3-10', 'done')" id="btn-d3-10-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d3-10', 'none')" id="btn-d3-10-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Solicitar el Uber de retorno <strong>directamente desde el interior del Salón Tenampa, el MUTEM o acceso principal iluminado</strong> (Eje Central)[cite: 7]. Nunca pedir en calles oscuras.</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 $90 MXN ($20.700 COP)</span>
+                        <span class="text-amber-400">🟡 Precaución Moderada (Zona iluminada)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DÍA 4 -->
+            <div id="day-content-4" class="day-pane space-y-3">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">04:45 AM - 05:15 AM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🟡 [AUTODESPLAZAMIENTO] Salida del Hotel a Isabel La Católica 61-A</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d4-1', 'done')" id="btn-d4-1-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d4-1', 'none')" id="btn-d4-1-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">El tour NO recoge en el hotel. Tomar Uber desde el lobby hasta Calle Isabel La Católica 61-A en el Centro Histórico (3.2 km / 12-15 min)[cite: 7]. Llegar antes de las 05:30 AM.</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 $80 MXN ($18.400 COP)</span>
+                        <span class="text-emerald-400">🟢 Seguro (Traslado en puerta)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">05:30 AM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">Punto de Encuentro Oficial (Grutas de Tolantongo)</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d4-2', 'done')" id="btn-d4-2-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d4-2', 'none')" id="btn-d4-2-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Lugar: Calle Isabel La Católica 61-A (Centro Histórico)[cite: 7]. Recoger Box Lunch y presentar PASAPORTE.</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 Incluido en Reserva</span>
+                        <span class="text-emerald-400">🟢 Seguro</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">05:30 AM - 06:00 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">Día en las Grutas de Tolantongo (Hidalgo)</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d4-3', 'done')" id="btn-d4-3-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d4-3', 'none')" id="btn-d4-3-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Pozas termales de Paraíso Escondido, cuevas, túneles, ríos y Box Lunch incluido[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 Incluido en Reserva</span>
+                        <span class="text-emerald-400">🟢 Seguro (Parque natural)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">07:00 PM - 07:30 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🟡 [AUTODESPLAZAMIENTO] Regreso del Tour al Hotel</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d4-4', 'done')" id="btn-d4-4-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d4-4', 'none')" id="btn-d4-4-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">El transporte los deja en Isabel La Católica 61-A. Tomar un Uber directo de regreso al lobby del Hotel Emporio Reforma (12-15 min)[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 $80 MXN ($18.400 COP)</span>
+                        <span class="text-emerald-400">🟢 Muy Seguro (Traslado en vehículo)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">07:30 PM - 08:00 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">Llegada al Hotel & Descanso</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d4-5', 'done')" id="btn-d4-5-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d4-5', 'none')" id="btn-d4-5-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Arribo al Hotel Emporio Reforma y tiempo para descansar tras la excursión.</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 Incluido en Reserva</span>
+                        <span class="text-emerald-400">🟢 Seguro</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">08:00 PM - 10:00 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🔹 [PLAN ADICIONAL] Noche de Domingo (Elija 1 opción)</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d4-6', 'done')" id="btn-d4-6-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d4-6', 'none')" id="btn-d4-6-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">• <strong>Opción 1:</strong> Recorrido a pie y postre por Reforma (Churrería El Moro) [$150 MXN][cite: 7].<br>• <strong>Opción 2:</strong> Visita nocturna a la Torre Latinoamericana (Tomar Uber ida/vuelta obligatorio por seguridad; abierto hasta las 10:00 PM) [$440 MXN entradas + Uber][cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 $150 a $520 MXN según opción</span>
+                        <span class="text-emerald-400">🟢 Muy Seguro (En Uber o Reforma)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DÍA 5 -->
+            <div id="day-content-5" class="day-pane space-y-3">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">08:00 AM - 09:00 AM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">Desayuno buffet en el Hotel Emporio</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d5-1', 'done')" id="btn-d5-1-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d5-1', 'none')" id="btn-d5-1-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Disfrutar el desayuno buffet incluido en el hotel.</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 Incluido en Reserva</span>
+                        <span class="text-emerald-400">🟢 Seguro</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">09:00 AM - 09:30 AM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">Check-out y Guarda-Equipaje en el Hotel</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d5-2', 'done')" id="btn-d5-2-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d5-2', 'none')" id="btn-d5-2-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Entregar la habitación y dejar las maletas en el <strong>guarda-equipaje gratuito del hotel</strong> para poder hacer planes sin carga[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 Incluido en Reserva</span>
+                        <span class="text-emerald-400">🟢 Seguro</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">09:30 AM - 09:50 AM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🟡 [AUTODESPLAZAMIENTO] Desplazamiento al Zócalo</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d5-3', 'done')" id="btn-d5-3-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d5-3', 'none')" id="btn-d5-3-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">• <strong>En Uber (Recomendado con equipaje):</strong> Tomar Uber al Zócalo ($70 MXN)[cite: 7].<br>• <strong>Opción Metro:</strong> Caminar a estación Revolución (Línea 2) y bajar en Zócalo/Tenochtitlán ($5 MXN c/u)[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 $70 MXN (Uber) o $10 MXN (Metro)</span>
+                        <span class="text-emerald-400">🟢 Seguro / 🟡 Moderado (Metro)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">09:50 AM - 11:30 AM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🔹 [PLAN ADICIONAL] Visita al Zócalo y Templo Mayor</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d5-4', 'done')" id="btn-d5-4-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d5-4', 'none')" id="btn-d5-4-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Recorrer la Plaza de la Constitución y entrar a la Zona Arqueológica y Museo Templo Mayor (Seminario 8). Admisión: $105 MXN por persona[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 $210 MXN ($48.300 COP)</span>
+                        <span class="text-emerald-400">🟢 Seguro (Zona turística vigilada)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">11:30 AM - 12:45 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🔹 [PLAN ADICIONAL] Barrio Chino y Almuerzo</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d5-5', 'done')" id="btn-d5-5-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d5-5', 'none')" id="btn-d5-5-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Caminata de 15 min hacia el Barrio Chino (Calle Dolores). Almuerzo recomendado y económico en <strong>Café Hong Kong</strong> o fondas tradicionales[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 $250 MXN ($57.500 COP)</span>
+                        <span class="text-emerald-400">🟢 Seguro (Zona comercial)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">01:00 PM - 03:30 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🔹 [PLAN ADICIONAL] Traslado a Chapultepec & Castillo</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d5-6', 'done')" id="btn-d5-6-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d5-6', 'none')" id="btn-d5-6-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Traslado en Metro con transbordo ($10 MXN) o Uber directo ($70 MXN). Entrada al Castillo de Chapultepec: $90 MXN por persona[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 $190 - $250 MXN</span>
+                        <span class="text-emerald-400">🟢 Seguro</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">03:30 PM - 04:00 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🟡 [AUTODESPLAZAMIENTO] Regreso al Hotel Emporio</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d5-7', 'done')" id="btn-d5-7-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d5-7', 'none')" id="btn-d5-7-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Solicitar Uber desde Chapultepec de regreso al Hotel Emporio Reforma para recoger el equipaje guardado.</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 $70 MXN ($16.100 COP)</span>
+                        <span class="text-emerald-400">🟢 Muy Seguro (Traslado directo)</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-bold text-amber-500">04:00 PM - 07:39 PM</span>
+                            <h3 class="font-bold text-white text-sm mt-0.5">🔹 [PLAN ADICIONAL] Descanso en el Hotel & Salida</h3>
+                        </div>
+                        <div class="flex space-x-1">
+                            <button onclick="setActivityState('d5-8', 'done')" id="btn-d5-8-done" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition">✓ Realizada</button>
+                            <button onclick="setActivityState('d5-8', 'none')" id="btn-d5-8-none" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition">✕ No</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300">Tiempo de descanso en el lobby del hotel o paseo final por Reforma. A las 07:39 PM, pick-up de KOI al aeropuerto (MEX), vuelo Avianca AV23 a las 11:20 PM y llegada a Bogotá (BOG) el martes 17 a las 05:00 AM[cite: 7].</p>
+                    <div class="flex justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+                        <span>💰 Incluido en Reserva</span>
+                        <span class="text-emerald-400">🟢 Seguro (Traslado privado KOI)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PESTAÑA 3: CONTACTOS -->
+        <div id="tab-contactos" class="tab-content space-y-4">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+                <h3 class="font-bold text-white text-sm">Directorio Unificado</h3>
+                <div class="text-xs space-y-2 text-slate-300">
+                    <p>🏨 Hotel Emporio: <span class="text-white font-bold">+52 55 5566 7766</span>[cite: 7]</p>
+                    <p>🚐 Amigo Tours: <span class="text-white font-bold">+52 55 4563 8246</span>[cite: 7]</p>
+                    <p>🚗 Traslados KOI: <span class="text-white font-bold">+971 52 437 4965</span>[cite: 7]</p>
+                    <p>🎟️ Avianca (Ref): <span class="text-white font-bold">CLYMCS</span>[cite: 7]</p>
+                    <p>🚨 Emergencias: <span class="text-white font-bold">911</span>[cite: 7]</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PESTAÑA 4: PRESUPUESTO Y SOUVENIRS -->
+        <div id="tab-presupuesto" class="tab-content space-y-4">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+                <h3 class="font-bold text-amber-400 text-sm"><i class="fa-solid fa-wallet"></i> Presupuesto Estimado y Souvenirs (2 Pax)</h3>
+                <div class="text-xs space-y-3 text-slate-300 divide-y divide-slate-800">
+                    <div class="pt-2 flex justify-between">
+                        <span>Caminata Ángel & Aperitivo (Día 1):</span>
+                        <span class="text-amber-400 font-bold">$250 MXN (~$57.500 COP)</span>[cite: 7]
+                    </div>
+                    <div class="pt-2 flex justify-between">
+                        <span>Turibus Nocturno CDMX (Día 1):</span>
+                        <span class="text-amber-400 font-bold">$500 MXN (~$115.000 COP)</span>[cite: 7]
+                    </div>
+                    <div class="pt-2 flex justify-between">
+                        <span>Fiebre de Malta / Comida (Día 1):</span>
+                        <span class="text-amber-400 font-bold">$550 MXN (~$126.500 COP)</span>[cite: 7]
+                    </div>
+                    <div class="pt-2 flex justify-between">
+                        <span>Comida / Antojos Coyoacán (Día 2):</span>
+                        <span class="text-amber-400 font-bold">$250 MXN (~$57.500 COP)</span>[cite: 7]
+                    </div>
+                    <div class="pt-2 flex justify-between">
+                        <span>Uber Arena México i/v (Día 2):</span>
+                        <span class="text-amber-400 font-bold">$200 MXN (~$46.000 COP)</span>[cite: 7]
+                    </div>
+                    <div class="pt-2 flex justify-between">
+                        <span>Entradas Lucha Libre CMLL (Día 2):</span>
+                        <span class="text-amber-400 font-bold">$800 MXN (~$184.000 COP)</span>[cite: 7]
+                    </div>
+                    <div class="pt-2 flex justify-between">
+                        <span>Souvenirs y Máscaras Arena (Día 2):</span>
+                        <span class="text-amber-400 font-bold">$300 MXN (~$69.000 COP)</span>[cite: 7]
+                    </div>
+                    <div class="pt-2 flex justify-between">
+                        <span>Uber Plaza Garibaldi i/v (Día 3):</span>
+                        <span class="text-amber-400 font-bold">$180 MXN (~$41.400 COP)</span>[cite: 7]
+                    </div>
+                    <div class="pt-2 flex justify-between">
+                        <span>Museo Tequila y Mezcal MUTEM (Día 3):</span>
+                        <span class="text-amber-400 font-bold">$180 MXN (~$41.400 COP)</span>[cite: 7]
+                    </div>
+                    <div class="pt-2 flex justify-between">
+                        <span>Mariachis y Tenampa (Día 3):</span>
+                        <span class="text-amber-400 font-bold">$500 MXN (~$115.000 COP)</span>[cite: 7]
+                    </div>
+                    <div class="pt-2 flex justify-between">
+                        <span>Uber Retorno Tolantongo (Día 4):</span>
+                        <span class="text-amber-400 font-bold">$80 MXN (~$18.400 COP)</span>[cite: 7]
+                    </div>
+                    <div class="pt-2 flex justify-between">
+                        <span>Noche Domingo - Opción 1 o 2 (Día 4):</span>
+                        <span class="text-amber-400 font-bold">$150 - $520 MXN</span>[cite: 7]
+                    </div>
+                    <div class="pt-2 flex justify-between">
+                        <span>Zócalo, Templo Mayor, Barrio Chino y Chapultepec (Día 5):</span>
+                        <span class="text-amber-400 font-bold">$740 - $850 MXN</span>[cite: 7]
+                    </div>
+                    <div class="pt-2 flex justify-between">
+                        <span>Guía de Souvenirs y Compras (Obsidiana, Tequila, Artesanías Ciudadela):</span>
+                        <span class="text-amber-400 font-bold">$1.100 - $1.950 MXN</span>[cite: 7]
+                    </div>
+                </div>
+                <div class="mt-3 p-3 bg-slate-950 rounded-xl border border-amber-500/30 text-center">
+                    <p class="text-xs text-slate-400">COSTO TOTAL ADICIONAL ESTIMADO:</p>
+                    <p class="text-sm font-extrabold text-amber-400 mt-0.5">$8.050 a $9.380 MXN (~ $1.85M a $2.15M COP)</p>[cite: 7]
+                </div>
+            </div>
+        </div>
+
+        <!-- PESTAÑA 5: ANTES / DESPUÉS Y CRONOGRAMA -->
+        <div id="tab-antes" class="tab-content space-y-4">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+                <h3 class="font-bold text-amber-400 text-sm"><i class="fa-solid fa-suitcase"></i> Antes y Después del Viaje</h3>
+                <div class="text-xs space-y-3 text-slate-300">
+                    <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                        <p class="font-bold text-white text-xs mb-1">🟢 MIÉRCOLES 11 NOV (Día Antes del Viaje):</p>
+                        <ul class="list-disc pl-4 space-y-1 text-slate-300">
+                            <li><strong>Verificación de documentos:</strong> Pasaportes vigentes, reservas de hotel, tiquetes Avianca (Vuelo AV72) y comprobantes de tours impresos[cite: 7].</li>
+                            <li><strong>Equipaje de mano:</strong> Revisar líquidos menor a 100 ml, ropa para clima templado/frío y adaptadores de corriente tipo A/B[cite: 7].</li>
+                            <li><strong>Check-in digital:</strong> Realizar web check-in en Avianca con la referencia <strong>CLYMCS</strong>[cite: 7].</li>
+                            <li><strong>Descanso:</strong> Asegurar mínimo 5 horas de sueño antes de despertar a las 03:00 AM[cite: 7].</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                        <p class="font-bold text-white text-xs mb-1">🔵 MARTES 17 NOV (Día Después del Viaje):</p>
+                        <ul class="list-disc pl-4 space-y-1 text-slate-300">
+                            <li><strong>05:00 AM:</strong> Aterrizaje en Bogotá (El Dorado) vuelo AV23 procedente de CDMX[cite: 7].</li>
+                            <li><strong>06:00 AM:</strong> Retorno a casa y breve organización matutina[cite: 7].</li>
+                            <li><strong>07:00 AM (Logística de Erika):</strong> Ingreso de Erika al trabajo. <br>• <em>Opción 1 (En Moto):</em> Jorge y Erika van juntos y Jorge la lleva directamente en la moto.<br>• <em>Opción 2 (En Uber):</em> Erika se dirige a su trabajo tomando transporte de plataforma[cite: 7]. En la tarde, Jorge pasa por ella para retornar juntos a casa[cite: 7].</li>
+                            <li><strong>08:00 AM en adelante:</strong> Desempaque, organización de recuerdos y descanso[cite: 7].</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Barra de Navegación Inferior -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 py-2 px-4 z-50">
+        <div class="max-w-md mx-auto flex justify-around">
+            <button onclick="switchTab('inicio')" id="nav-inicio" class="nav-btn flex flex-col items-center text-amber-500">
+                <i class="fa-solid fa-house text-base"></i>
+                <span class="text-[10px] mt-1">Inicio</span>
+            </button>
+            <button onclick="switchTab('itinerario')" id="nav-itinerario" class="nav-btn flex flex-col items-center text-slate-400">
+                <i class="fa-solid fa-calendar-days text-base"></i>
+                <span class="text-[10px] mt-1">Itinerario</span>
+            </button>
+            <button onclick="switchTab('contactos')" id="nav-contactos" class="nav-btn flex flex-col items-center text-slate-400">
+                <i class="fa-solid fa-address-book text-base"></i>
+                <span class="text-[10px] mt-1">Contactos</span>
+            </button>
+            <button onclick="switchTab('presupuesto')" id="nav-presupuesto" class="nav-btn flex flex-col items-center text-slate-400">
+                <i class="fa-solid fa-wallet text-base"></i>
+                <span class="text-[10px] mt-1">Presupuesto</span>
+            </button>
+            <button onclick="switchTab('antes')" id="nav-antes" class="nav-btn flex flex-col items-center text-slate-400">
+                <i class="fa-solid fa-suitcase text-base"></i>
+                <span class="text-[10px] mt-1">Antes/Después</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Script de Interactividad y Memoria Local -->
+    <script>
+        const activityIds = ['d1-1', 'd1-2', 'd1-3', 'd1-4', 'd1-5', 'd1-6', 'd1-7', 'd1-8', 'd1-9', 'd1-10', 'd1-11', 'd1-12', 'd2-1', 'd2-2', 'd2-3', 'd2-4', 'd2-5', 'd2-6', 'd2-7', 'd2-8', 'd2-9', 'd2-10', 'd2-11', 'd2-12', 'd2-13', 'd3-1', 'd3-2', 'd3-3', 'd3-4', 'd3-5', 'd3-6', 'd3-7', 'd3-8', 'd3-9', 'd3-10', 'd4-1', 'd4-2', 'd4-3', 'd4-4', 'd4-5', 'd4-6', 'd5-1', 'd5-2', 'd5-3', 'd5-4', 'd5-5', 'd5-6', 'd5-7', 'd5-8'];
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.replace('text-amber-500', 'text-slate-400'));
+            
+            document.getElementById('tab-' + tabId).classList.add('active');
+            document.getElementById('nav-' + tabId).classList.replace('text-slate-400', 'text-amber-500');
+            window.scrollTo(0, 0);
+        }
+
+        function switchDay(dayNum) {
+            document.querySelectorAll('.day-pane').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.day-tab').forEach(el => {
+                el.classList.replace('bg-amber-500', 'bg-slate-900');
+                el.classList.replace('text-slate-950', 'text-slate-400');
+            });
+
+            document.getElementById('day-content-' + dayNum).classList.add('active');
+            const activeBtn = document.getElementById('day-btn-' + dayNum);
+            activeBtn.classList.replace('bg-slate-900', 'bg-amber-500');
+            activeBtn.classList.replace('text-slate-400', 'text-slate-950');
+        }
+
+        function toggleTheme() {
+         const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.className = "fa-solid fa-sun text-sm";
+            } else {
+                html.classList.add('dark');
+                icon.className = "fa-solid fa-moon text-sm";
+            }
+        }
+
+        function setActivityState(id, state) {
+            localStorage.setItem('act_' + id, state);
+            updateUI();
+        }
+
+        function updateUI() {
+            let doneCount = 0;
+            let noneCount = 0;
+            
+            activityIds.forEach(id => {
+                const state = localStorage.getItem('act_' + id);
+                const btnDone = document.getElementById('btn-' + id + '-done');
+                const btnNone = document.getElementById('btn-' + id + '-none');
+                
+                if (btnDone && btnNone) {
+                    btnDone.className = "px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-emerald-600 transition";
+                    btnNone.className = "px-2 py-1 text-[10px] font-semibold rounded bg-slate-800 text-slate-300 hover:bg-rose-600 transition";
+
+                    if (state === 'done') {
+                        btnDone.className = "px-2 py-1 text-[10px] font-semibold rounded bg-emerald-600 text-white shadow";
+                        doneCount++;
+                    } else if (state === 'none') {
+                        btnNone.className = "px-2 py-1 text-[10px] font-semibold rounded bg-rose-600 text-white shadow";
+                        noneCount++;
+                    }
+                }
+            });
+
+            const percent = Math.round((doneCount / activityIds.length) * 100);
+            
+            // Actualizar barra superior general
+            if(document.getElementById('progress-text')) {
+                document.getElementById('progress-text').innerText = percent + '% Progreso';
+                document.getElementById('progress-bar').style.width = percent + '%';
+            }
+
+            // Actualizar contadores en la tarjeta de inicio
+            if(document.getElementById('inicio-done-count')) {
+                document.getElementById('inicio-done-count').innerText = doneCount;
+                document.getElementById('inicio-none-count').innerText = noneCount;
+                document.getElementById('inicio-total-count').innerText = activityIds.length;
+            }
+        }
+
+        window.onload = function() {
+            updateUI();
+        };
+    </script>
+</body>
+</html>
