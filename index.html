@@ -1708,6 +1708,24 @@
                 </div>
             </div>
 
+<!-- NUEVO: Bloque Después del Viaje (Bloqueado inicialmente) -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3 mt-4">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                    <h3 class="font-bold text-amber-400 text-sm"><i class="fa-solid fa-suitcase"></i> Conclusión del Viaje</h3>
+                    <span id="trip-lock-badge" class="text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded font-semibold">🔒 Bloqueado (&lt; 85%)</span>
+                </div>
+                <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800 space-y-3">
+                    <p class="text-xs text-slate-300">Martes 17 Nov: Retorno a Bogotá, llegada a casa y descanso tras la gran aventura en CDMX.</p>
+                    <div class="pt-2 border-t border-slate-800 flex items-center justify-between">
+                        <span class="text-[11px] text-slate-400">Estado:</span>
+                        <button onclick="clickTripDone()" id="btn-trip-done" class="px-3 py-1.5 text-xs font-bold rounded-xl bg-slate-800 text-slate-400 cursor-not-allowed transition flex items-center space-x-1.5" disabled>
+                            <i class="fa-solid fa-lock" id="trip-lock-icon"></i>
+                            <span id="trip-btn-text">Viaje Concluido (Requiere 85%)</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Bloque Informativo Martes 17 Nov (Día Después) -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
                 <h3 class="font-bold text-amber-400 text-sm"><i class="fa-solid fa-suitcase"></i> Después del Viaje</h3>
@@ -2124,6 +2142,37 @@
 
             const inicioNone = document.getElementById('inicio-none-count');
             if (inicioNone) inicioNone.innerText = noneCount;
+
+// --- NUEVA LÓGICA DE DESBLOQUEO AL 85% ---
+            const percent = activityIds.length > 0 ? Math.round((doneCount / activityIds.length) * 100) : 0;
+            
+            const tripBtn = document.getElementById('btn-trip-done');
+            const tripLockBadge = document.getElementById('trip-lock-badge');
+            const tripLockIcon = document.getElementById('trip-lock-icon');
+            const tripBtnText = document.getElementById('trip-btn-text');
+
+            if (tripBtn && percent >= 85) {
+                tripBtn.removeAttribute('disabled');
+                tripBtn.setAttribute('data-unlocked', 'true');
+                tripBtn.className = "px-3 py-1.5 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg transition flex items-center space-x-1.5 cursor-pointer";
+                if (tripLockBadge) {
+                    tripLockBadge.className = "text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded font-semibold";
+                    tripLockBadge.innerText = "🔓 ¡Desbloqueado!";
+                }
+                if (tripLockIcon) tripLockIcon.className = "fa-solid fa-check";
+                if (tripBtnText) tripBtnText.innerText = "✓ Viaje Concluido (¡Clic aquí!)";
+            }
+        }
+
+function clickTripDone() {
+            const tripBtn = document.getElementById('btn-trip-done');
+            if (tripBtn && tripBtn.getAttribute('data-unlocked') === 'true') {
+                document.getElementById('congrats-modal').classList.remove('hidden');
+            }
+        }
+
+        function closeCongratsModal() {
+            document.getElementById('congrats-modal').classList.add('hidden');
         }
 
         function escucharCambiosEnNube() {
@@ -2153,5 +2202,18 @@
             updateCurrencyConverter();
         };
     </script>
+<!-- NUEVA VENTANA MODAL DE FELICITACIÓN -->
+    <div id="congrats-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[110] hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-amber-500/40 rounded-3xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div class="mx-auto w-16 h-16 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center text-3xl shadow-lg">
+                <i class="fa-solid fa-award"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-extrabold text-white">¡Misión Cumplida, Jorge & Erika! 🇲🇽✈️</h3>
+                <p class="text-xs text-slate-300 mt-1">¡Qué gran viaje construyeron y disfrutaron juntos en Ciudad de México!</p>
+            </div>
+            <button onclick="closeCongratsModal()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 rounded-2xl text-xs transition shadow-lg">¡Cerrar! 🌟</button>
+        </div>
+    </div>
 </body>
 </html>
