@@ -2203,17 +2203,23 @@ function clickTripDone() {
         };
     </script>
 <!-- NUEVA VENTANA MODAL DE FELICITACIÓN -->
-    <div id="congrats-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[110] hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-amber-500/40 rounded-3xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl animate-in fade-in zoom-in duration-200">
-            <div class="mx-auto w-16 h-16 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center text-3xl shadow-lg">
-                <i class="fa-solid fa-award"></i>
-            </div>
-            <div>
-                <h3 class="text-lg font-extrabold text-white">¡Misión Cumplida, Jorge & Erika! 🇲🇽✈️</h3>
-                <p class="text-xs text-slate-300 mt-1">¡Qué gran viaje construyeron y disfrutaron juntos en Ciudad de México!</p>
-            </div>
-            <button onclick="closeCongratsModal()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 rounded-2xl text-xs transition shadow-lg">¡Cerrar! 🌟</button>
+
+<!-- NUEVA VENTANA MODAL DE FELICITACIÓN -->
+<div id="congrats-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[110] hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-amber-500/40 rounded-3xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl animate-in fade-in zoom-in duration-200">
+        <div class="mx-auto w-16 h-16 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center text-3xl shadow-lg">
+            <i class="fa-solid fa-award"></i>
         </div>
+        <div>
+            <h3 class="text-base font-extrabold text-white">¡Gracias por este viaje inolvidable! ❤️</h3>
+            <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                <strong>Erika & Jorge:</strong> ¡Misión cumplida en CDMX! 🇲🇽✨<br><br>
+                Nuestra imaginación no tiene límites: alista desde ya tu próximo viaje para el 2028, ¡las opciones son muchas como Punta Cana, Panamá, Brasil o Europa! 🌍
+            </p>
+        </div>
+        <button onclick="closeCongratsModal()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 rounded-2xl text-xs transition shadow-lg">¡Entendido! 🌟</button>
     </div>
+</div>
+
 </body>
 </html>
